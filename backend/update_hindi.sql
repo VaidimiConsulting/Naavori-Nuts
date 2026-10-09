@@ -1,0 +1,15 @@
+SET NAMES utf8mb4;
+UPDATE products SET hindi_name = 'मामरा बादाम' WHERE name LIKE '%Almond%';
+UPDATE products SET hindi_name = 'कश्मीरी केसर' WHERE name LIKE '%Saffron%';
+UPDATE products SET hindi_name = 'काजू' WHERE name LIKE '%Cashew%';
+UPDATE products SET hindi_name = 'अखरोट' WHERE name LIKE '%Walnut%';
+UPDATE products SET hindi_name = 'सूखा नारियल' WHERE name LIKE '%Coconut%';
+UPDATE products SET hindi_name = 'हरी इलायची' WHERE name LIKE '%Cardamom%';
+UPDATE products SET hindi_name = 'मखाना' WHERE name LIKE '%Fox Nut%' OR name LIKE '%Makhana%';
+UPDATE products SET hindi_name = 'काली मिर्च' WHERE name LIKE '%Pepper%';
+UPDATE products SET hindi_name = 'कद्दू के बीज' WHERE name LIKE '%Pumpkin%';
+UPDATE products SET hindi_name = 'जीरा' WHERE name LIKE '%Cumin%';
+UPDATE products SET hindi_name = 'धनिया' WHERE name LIKE '%Coriander%';
+UPDATE products SET hindi_name = 'खरबूजे के बीज' WHERE name LIKE '%Melon%';
+UPDATE products SET hindi_name = 'अलसी के बीज' WHERE name LIKE '%Flax%';
+UPDATE products SET hindi_name = 'सूरजमुखी के बीज' WHERE name LIKE '%Sunflower%';

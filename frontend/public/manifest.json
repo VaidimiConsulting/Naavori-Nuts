@@ -1,0 +1,16 @@
+{
+  "name": "NAAVORI NUTS — Premium Origins",
+  "short_name": "NAAVORI NUTS",
+  "description": "Premium nuts, seeds and spices rooted in India.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f4ede4",
+  "theme_color": "#38243f",
+  "icons": [
+    {
+      "src": "./assets/naavori-logo-transparent.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
