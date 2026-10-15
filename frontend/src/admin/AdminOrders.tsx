@@ -4,7 +4,7 @@ import {
   Package, Truck, CheckCircle2, Clock, X, Filter,
   FileText, Download, RotateCcw, Building2, ChevronRight, AlertCircle
 } from 'lucide-react';
-import api from '../services/api';
+import api, { API_BASE_URL } from '../services/api';
 import { Link } from 'react-router-dom';
 
 type OrderItem = {
@@ -773,7 +773,7 @@ export default function AdminOrders() {
                             <Eye size={13} /> View
                           </Link>
                           <a
-                            href={`/api/v1/admin/orders/${order.id}/invoice`}
+                            href={`${API_BASE_URL}/admin/orders/${order.id}/invoice`}
                             target="_blank"
                             rel="noreferrer"
                             style={{

@@ -3,7 +3,7 @@ import {
   Search, Edit3, ShieldAlert, CheckCircle, 
   Image as ImageIcon, IndianRupee, X, Check, Calculator, Sparkles, Plus, Trash2, ArrowUpRight, RefreshCw
 } from 'lucide-react';
-import api from '../services/api';
+import api, { SERVER_BASE_URL } from '../services/api';
 import { Link } from 'react-router-dom';
 
 type VariantDTO = {
@@ -432,7 +432,7 @@ export default function AdminPricing() {
                           }}>
                             {(() => {
                               const img = product.image_url 
-                                ? (product.image_url.startsWith('http') ? product.image_url : `http://localhost:5000${product.image_url}`)
+                                ? (product.image_url.startsWith('http') ? product.image_url : `${SERVER_BASE_URL}${product.image_url}`)
                                 : `/assets/${product.category_name === 'Spices' ? 'products-spices' : product.category_name === 'Seeds' ? 'products-seeds' : 'products-official'}/${product.slug === 'kashmir-walnut' ? 'snow-walnuts' : product.slug === 'premium-cashew' ? 'jumbo-cashews' : product.packaging_key || product.slug || 'mamra-almonds'}-250g.webp`;
                               return (
                                 <img

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import api, { API_BASE_URL } from '../services/api';
 import { ArrowLeft, Printer, Truck, CheckCircle, XCircle, RotateCcw, PackageCheck } from 'lucide-react';
 
 export default function AdminOrderDetail() {
@@ -34,8 +34,7 @@ export default function AdminOrderDetail() {
   };
 
   const handleDownloadInvoice = () => {
-    const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
-    window.open(`${baseURL}/admin/orders/${id}/invoice`, '_blank');
+    window.open(`${API_BASE_URL}/admin/orders/${id}/invoice`, '_blank');
   };
 
   if (loading) return <div style={{ padding: '24px', fontFamily: 'DM Sans' }}>Loading order details...</div>;

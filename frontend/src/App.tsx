@@ -36,7 +36,7 @@ import {
   FileText,
   RotateCcw,
 } from 'lucide-react';
-import api from './services/api';
+import api, { SERVER_BASE_URL } from './services/api';
 import { CustomerAuth } from './customer/CustomerAuth';
 import { CustomerAccount } from './customer/CustomerAccount';
 import { FloatingConcierge } from './components/FloatingConcierge';
@@ -375,7 +375,7 @@ const defaultFallbackPouch = (category?: string) => {
 const productImage = (product: Product, weight: Weight = '250g') => {
   if (product.imageUrl) {
     if (product.imageUrl.startsWith('http') || product.imageUrl.startsWith('/uploads') || product.imageUrl.startsWith('data:')) {
-      return product.imageUrl.startsWith('/uploads') ? `http://localhost:5000${product.imageUrl}` : product.imageUrl;
+      return product.imageUrl.startsWith('/uploads') ? `${SERVER_BASE_URL}${product.imageUrl}` : product.imageUrl;
     }
     return asset(product.imageUrl);
   }

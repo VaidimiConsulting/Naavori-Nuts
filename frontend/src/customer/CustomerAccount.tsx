@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { User, Phone, Mail, MapPin, Package, FileText, LogOut, ArrowUpRight, ShoppingBag, Clock, CheckCircle, RotateCcw } from 'lucide-react';
-import api from '../services/api';
+import api, { API_BASE_URL } from '../services/api';
 import type { CustomerUser } from './CustomerAuth';
 
 type CustomerAccountProps = {
@@ -230,7 +230,7 @@ export function CustomerAccount({ customer, onLogout, navigate, onReorder }: Cus
                           </button>
                         )}
                         <a
-                          href={`/api/v1/public/orders/${order.id}/invoice`}
+                          href={`${API_BASE_URL}/public/orders/${order.id}/invoice`}
                           target="_blank"
                           rel="noreferrer"
                           style={{
