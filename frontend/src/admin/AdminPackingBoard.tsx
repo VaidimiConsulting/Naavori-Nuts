@@ -114,7 +114,7 @@ export default function AdminPackingBoard() {
     <div style={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontFamily: 'Cormorant Garamond', fontSize: '32px', color: '#38243F', margin: 0 }}>Packing Board</h1>
+          <h1 style={{ fontFamily: 'DM Sans', fontSize: '32px', color: '#38243F', margin: 0 }}>Packing Board</h1>
           <p style={{ fontFamily: 'DM Sans', color: '#666', margin: '4px 0 0 0' }}>Drag and drop to pack orders.</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#52c41a', fontFamily: 'DM Sans', fontSize: '14px', fontWeight: 500 }}>

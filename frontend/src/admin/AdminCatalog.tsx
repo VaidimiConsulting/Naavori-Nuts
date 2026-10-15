@@ -1,7 +1,19 @@
-import { useState, useEffect } from 'react';
-import { Search, Plus, Edit, Trash2, ShieldAlert, CheckCircle, Image as ImageIcon } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { 
+  Search, Plus, Edit, Trash2, ShieldAlert, CheckCircle, 
+  Image as ImageIcon, IndianRupee, X, Check, Calculator, Sparkles 
+} from 'lucide-react';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
+
+type VariantDTO = {
+  id?: string;
+  weight_label: string;
+  price: number | string;
+  compare_at_price?: number | string | null;
+  sku?: string;
+  stock?: number;
+};
 
 type ProductListDTO = {
   id: string;
@@ -9,38 +21,63 @@ type ProductListDTO = {
   slug: string;
   origin: string;
   category_name: string;
+  category_slug?: string;
+  category_id?: string;
   is_active: boolean;
   starting_price: number | null;
   total_stock: number | null;
   hindi_name?: string;
+  variants?: VariantDTO[];
+  image_url?: string;
+  packaging_key?: string;
 };
+
+type CategoryTabKey = 'all' | 'nuts' | 'spices' | 'seeds' | 'gifting';
 
 export default function AdminCatalog() {
   const [products, setProducts] = useState<ProductListDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [activeTab, setActiveTab] = useState<CategoryTabKey>('all');
+  
+  // Quick Price Modal state
+  const [pricingModalProduct, setPricingModalProduct] = useState<ProductListDTO | null>(null);
+  const [editVariants, setEditVariants] = useState<VariantDTO[]>([]);
+  const [base1kgRate, setBase1kgRate] = useState<string>('');
+  const [savingPrices, setSavingPrices] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get('/products', { params: { search } });
-      setProducts(data.data);
+      const params: any = { search, limit: 100 };
+      if (activeTab !== 'all') {
+        params.category_id = activeTab;
+      }
+      const { data } = await api.get('/products', { params });
+      setProducts(data.data || []);
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    const timer = setTimeout(fetchProducts, 300);
+    const timer = setTimeout(fetchProducts, 250);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, activeTab]);
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
       try {
         await api.delete(`/products/${id}`);
+        showToast(`Product "${name}" deleted.`);
         fetchProducts();
       } catch (error) {
         console.error(error);
@@ -49,114 +86,736 @@ export default function AdminCatalog() {
     }
   };
 
+  // Open Quick Price Modal
+  const openPricingModal = (product: ProductListDTO) => {
+    setPricingModalProduct(product);
+    const existing = product.variants && product.variants.length > 0
+      ? product.variants.map(v => ({
+          id: v.id,
+          weight_label: v.weight_label || '',
+          price: v.price || '',
+          compare_at_price: v.compare_at_price || '',
+          sku: v.sku || ''
+        }))
+      : [
+          { weight_label: '100g', price: '', compare_at_price: '', sku: `${product.slug}-100g` },
+          { weight_label: '250g', price: '', compare_at_price: '', sku: `${product.slug}-250g` },
+          { weight_label: '500g', price: '', compare_at_price: '', sku: `${product.slug}-500g` },
+          { weight_label: '1kg', price: '', compare_at_price: '', sku: `${product.slug}-1kg` },
+        ];
+    setEditVariants(existing);
+
+    const v1kg = product.variants?.find(v => v.weight_label.toLowerCase() === '1kg');
+    if (v1kg && v1kg.price) {
+      setBase1kgRate(String(v1kg.price));
+    } else {
+      setBase1kgRate('');
+    }
+  };
+
+  const handleVariantFieldChange = (index: number, field: keyof VariantDTO, val: string) => {
+    const updated = [...editVariants];
+    updated[index] = { ...updated[index], [field]: val };
+    setEditVariants(updated);
+  };
+
+  const addVariantRow = () => {
+    const slug = pricingModalProduct?.slug || 'item';
+    setEditVariants([
+      ...editVariants,
+      { weight_label: '', price: '', compare_at_price: '', sku: `${slug}-${editVariants.length + 1}` }
+    ]);
+  };
+
+  const removeVariantRow = (index: number) => {
+    setEditVariants(editVariants.filter((_, i) => i !== index));
+  };
+
+  // 1 kg Auto-Calculator logic
+  const apply1kgAutoCalculation = () => {
+    const rate = parseFloat(base1kgRate);
+    if (!rate || isNaN(rate) || rate <= 0) {
+      alert('Please enter a valid 1 kg base rate in ₹');
+      return;
+    }
+    const slug = pricingModalProduct?.slug || 'item';
+    setEditVariants([
+      { weight_label: '100g', price: String(Math.round(rate * 0.10)), compare_at_price: '', sku: `${slug}-100g` },
+      { weight_label: '250g', price: String(Math.round(rate * 0.25)), compare_at_price: '', sku: `${slug}-250g` },
+      { weight_label: '500g', price: String(Math.round(rate * 0.50)), compare_at_price: '', sku: `${slug}-500g` },
+      { weight_label: '1kg', price: String(Math.round(rate)), compare_at_price: '', sku: `${slug}-1kg` }
+    ]);
+  };
+
+  // Apply Presets based on ingredient category
+  const applyPreset = (type: 'nuts-seeds' | 'spices' | 'saffron') => {
+    const slug = pricingModalProduct?.slug || 'item';
+    if (type === 'nuts-seeds') {
+      setEditVariants([
+        { weight_label: '100g', price: '', compare_at_price: '', sku: `${slug}-100g` },
+        { weight_label: '250g', price: '', compare_at_price: '', sku: `${slug}-250g` },
+        { weight_label: '500g', price: '', compare_at_price: '', sku: `${slug}-500g` },
+        { weight_label: '1kg', price: '', compare_at_price: '', sku: `${slug}-1kg` }
+      ]);
+    } else if (type === 'spices') {
+      setEditVariants([
+        { weight_label: '50g', price: '', compare_at_price: '', sku: `${slug}-50g` },
+        { weight_label: '100g', price: '', compare_at_price: '', sku: `${slug}-100g` },
+        { weight_label: '250g', price: '', compare_at_price: '', sku: `${slug}-250g` },
+        { weight_label: '500g', price: '', compare_at_price: '', sku: `${slug}-500g` }
+      ]);
+    } else if (type === 'saffron') {
+      setEditVariants([
+        { weight_label: '1g', price: '', compare_at_price: '', sku: `${slug}-1g` },
+        { weight_label: '2g', price: '', compare_at_price: '', sku: `${slug}-2g` },
+        { weight_label: '5g', price: '', compare_at_price: '', sku: `${slug}-5g` },
+        { weight_label: '10g', price: '', compare_at_price: '', sku: `${slug}-10g` }
+      ]);
+    }
+  };
+
+  // Save Pricing via API
+  const handleSavePrices = async () => {
+    if (!pricingModalProduct) return;
+    const validVariants = editVariants.filter(v => v.price !== '' && !isNaN(Number(v.price)));
+    if (validVariants.length === 0) {
+      alert('Please configure at least one variant with a valid price in ₹.');
+      return;
+    }
+
+    setSavingPrices(true);
+    try {
+      await api.patch(`/products/${pricingModalProduct.id}/pricing`, { variants: validVariants });
+      showToast(`Prices for "${pricingModalProduct.name}" updated successfully!`);
+      setPricingModalProduct(null);
+      fetchProducts();
+    } catch (err: any) {
+      console.error(err);
+      alert('Failed to update prices: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setSavingPrices(false);
+    }
+  };
+
+  // Category counts from state
+  const categoryCounts = useMemo(() => {
+    return {
+      all: products.length,
+      nuts: products.filter(p => (p.category_name || '').toLowerCase() === 'nuts').length,
+      spices: products.filter(p => (p.category_name || '').toLowerCase() === 'spices').length,
+      seeds: products.filter(p => (p.category_name || '').toLowerCase() === 'seeds').length,
+      gifting: products.filter(p => (p.category_name || '').toLowerCase().includes('gift')).length,
+    };
+  }, [products]);
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <div>
-          <h1 style={{ fontFamily: 'Cormorant Garamond', fontSize: '32px', color: '#38243F', margin: 0 }}>Product Catalog</h1>
-          <p style={{ fontFamily: 'DM Sans', color: '#666', margin: '4px 0 0 0' }}>Manage listings, pricing, and variants</p>
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          top: '24px',
+          right: '24px',
+          backgroundColor: '#38243F',
+          color: '#FDFBF7',
+          padding: '12px 20px',
+          borderRadius: '8px',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          zIndex: 9999,
+          fontFamily: 'DM Sans',
+          fontWeight: 600,
+          border: '1px solid #D4AF37'
+        }}>
+          <Check size={18} color="#52c41a" />
+          <span>{toastMessage}</span>
         </div>
-        <Link to="/admin/catalog/new" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', backgroundColor: '#38243F', color: '#FDFBF7', textDecoration: 'none', borderRadius: '6px', fontFamily: 'DM Sans', fontWeight: 600 }}>
-          <Plus size={18} /> Add Product
-        </Link>
+      )}
+
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+        <div>
+          <h1 style={{ fontFamily: 'DM Sans', fontSize: '32px', color: '#38243F', margin: 0 }}>Product & Price Catalog</h1>
+          <p style={{ fontFamily: 'DM Sans', color: '#666', margin: '4px 0 0 0' }}>Manage Nuts, Spices, and Seeds listings, weights, and live prices</p>
+        </div>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <Link 
+            to="/admin/pricing"
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 18px', 
+              backgroundColor: '#D4AF37', color: '#38243F', textDecoration: 'none', 
+              borderRadius: '7px', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '14px',
+              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)'
+            }}
+          >
+            <IndianRupee size={16} /> Price Manager (मूल्य प्रबंधन)
+          </Link>
+          <Link 
+            to={activeTab !== 'all' ? `/admin/catalog/new?category=${activeTab}` : '/admin/catalog/new'} 
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', 
+              backgroundColor: '#38243F', color: '#FDFBF7', textDecoration: 'none', 
+              borderRadius: '7px', fontFamily: 'DM Sans', fontWeight: 600, fontSize: '14px',
+              boxShadow: '0 2px 8px rgba(56,36,63,0.12)'
+            }}
+          >
+            <Plus size={18} /> Add {activeTab === 'nuts' ? 'Nut' : activeTab === 'spices' ? 'Spice' : activeTab === 'seeds' ? 'Seed' : 'Product'}
+          </Link>
+        </div>
       </div>
 
-      <div style={{ background: '#fff', borderRadius: '8px', border: '1px solid #EAEAEA', overflow: 'hidden' }}>
+      {/* Category Tabs: Nuts, Spices, Seeds, Gifting */}
+      <div style={{ 
+        display: 'flex', 
+        gap: '10px', 
+        marginBottom: '20px', 
+        borderBottom: '1px solid #EAEAEA', 
+        paddingBottom: '12px',
+        overflowX: 'auto'
+      }}>
+        {[
+          { key: 'all' as CategoryTabKey, label: 'All Products', icon: '🧺' },
+          { key: 'nuts' as CategoryTabKey, label: 'Nuts (काजू, बादाम, अखरोट)', icon: '🥜' },
+          { key: 'spices' as CategoryTabKey, label: 'Spices (केसर, इलायची, मसाले)', icon: '🌶️' },
+          { key: 'seeds' as CategoryTabKey, label: 'Seeds (चिया, कद्दू, अलसी)', icon: '🌱' },
+          { key: 'gifting' as CategoryTabKey, label: 'Gifting Hampers', icon: '🎁' },
+        ].map(tab => {
+          const isSelected = activeTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '9px 18px',
+                borderRadius: '8px',
+                border: isSelected ? '1px solid #38243F' : '1px solid #EAEAEA',
+                backgroundColor: isSelected ? '#38243F' : '#fff',
+                color: isSelected ? '#FDFBF7' : '#555',
+                fontFamily: 'DM Sans',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <span>{tab.icon}</span>
+              <span>{tab.label}</span>
+              {isSelected && (
+                <span style={{ 
+                  backgroundColor: 'rgba(212, 175, 55, 0.25)', 
+                  color: '#D4AF37', 
+                  fontSize: '11px', 
+                  padding: '2px 7px', 
+                  borderRadius: '12px',
+                  fontWeight: 700 
+                }}>
+                  {products.length}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Table Card */}
+      <div style={{ background: '#fff', borderRadius: '10px', border: '1px solid #EAEAEA', overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.03)' }}>
         
         {/* Toolbar */}
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid #EAEAEA', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ position: 'relative', width: '300px' }}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid #EAEAEA', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ position: 'relative', width: '320px' }}>
             <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
             <input 
               type="text" 
-              placeholder="Search by product name or SKU..." 
+              placeholder={`Search ${activeTab === 'all' ? 'products' : activeTab}...`}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{ width: '100%', padding: '8px 12px 8px 36px', borderRadius: '6px', border: '1px solid #ddd', fontFamily: 'DM Sans' }} 
+              style={{ width: '100%', padding: '9px 12px 9px 38px', borderRadius: '6px', border: '1px solid #ddd', fontFamily: 'DM Sans', fontSize: '13.5px' }} 
             />
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <button style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #ddd', backgroundColor: '#fff', cursor: 'pointer', fontFamily: 'DM Sans' }}>Import CSV</button>
-            <button style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #ddd', backgroundColor: '#fff', cursor: 'pointer', fontFamily: 'DM Sans' }}>Export CSV</button>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <span style={{ fontFamily: 'DM Sans', fontSize: '13px', color: '#666' }}>
+              Showing <strong>{products.length}</strong> items
+            </span>
           </div>
         </div>
 
         {/* List */}
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontFamily: 'DM Sans', fontSize: '14px' }}>
-          <thead style={{ backgroundColor: '#f9f9f9', color: '#666', borderBottom: '1px solid #EAEAEA' }}>
-            <tr>
-              <th style={{ padding: '16px 20px', fontWeight: 500 }}>Product Name</th>
-              <th style={{ padding: '16px 20px', fontWeight: 500 }}>Category & Origin</th>
-              <th style={{ padding: '16px 20px', fontWeight: 500 }}>Base Price</th>
-              <th style={{ padding: '16px 20px', fontWeight: 500 }}>Stock Level</th>
-              <th style={{ padding: '16px 20px', fontWeight: 500 }}>Listing Health</th>
-              <th style={{ padding: '16px 20px', fontWeight: 500 }}>Status</th>
-              <th style={{ padding: '16px 20px', fontWeight: 500 }}>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={7} style={{ padding: '40px', textAlign: 'center' }}>Loading catalog...</td></tr>
-            ) : products.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding: '40px', textAlign: 'center', color: '#888' }}>No products found.</td></tr>
-            ) : (
-              products.map(product => {
-                const stock = Number(product.total_stock) || 0;
-                const isLowStock = stock > 0 && stock <= 10;
-                const isOutOfStock = stock === 0;
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontFamily: 'DM Sans', fontSize: '13.5px' }}>
+            <thead style={{ backgroundColor: '#fcfcfc', color: '#555', borderBottom: '1px solid #EAEAEA' }}>
+              <tr>
+                <th style={{ padding: '14px 18px', fontWeight: 600 }}>Product & Hindi Name</th>
+                <th style={{ padding: '14px 18px', fontWeight: 600 }}>Category & Origin</th>
+                <th style={{ padding: '14px 18px', fontWeight: 600, minWidth: '220px' }}>Weights & Pricing (₹)</th>
+                <th style={{ padding: '14px 18px', fontWeight: 600 }}>Stock</th>
+                <th style={{ padding: '14px 18px', fontWeight: 600 }}>Status</th>
+                <th style={{ padding: '14px 18px', fontWeight: 600, textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: '#888' }}>Loading {activeTab} catalogue...</td></tr>
+              ) : products.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ padding: '50px 20px', textAlign: 'center', color: '#888' }}>
+                    <p style={{ margin: 0, fontSize: '15px' }}>No {activeTab !== 'all' ? activeTab : 'products'} found.</p>
+                    <Link 
+                      to={activeTab !== 'all' ? `/admin/catalog/new?category=${activeTab}` : '/admin/catalog/new'} 
+                      style={{ display: 'inline-block', marginTop: '12px', color: '#38243F', fontWeight: 600 }}
+                    >
+                      + Add new {activeTab !== 'all' ? activeTab : 'product'}
+                    </Link>
+                  </td>
+                </tr>
+              ) : (
+                products.map(product => {
+                  const stock = Number(product.total_stock) || 0;
+                  const isOutOfStock = stock === 0;
+                  const isLowStock = stock > 0 && stock <= 10;
+                  const categoryName = product.category_name || 'Uncategorized';
+                  const variants = product.variants || [];
 
-                return (
-                  <tr key={product.id} style={{ borderBottom: '1px solid #EAEAEA' }}>
-                    <td style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ width: '40px', height: '40px', backgroundColor: '#f0f0f0', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
-                        <ImageIcon size={20} />
-                      </div>
-                      <div>
-                        <strong style={{ display: 'block', color: '#38243F' }}>{product.name}{product.hindi_name && ` (${product.hindi_name})`}</strong>
-                        <span style={{ fontSize: '12px', color: '#888' }}>/{product.slug}</span>
-                      </div>
-                    </td>
-                    <td style={{ padding: '16px 20px' }}>
-                      {product.category_name || 'Uncategorized'}<br/>
-                      <span style={{ fontSize: '12px', color: '#888' }}>{product.origin}</span>
-                    </td>
-                    <td style={{ padding: '16px 20px' }}>
-                      {product.starting_price ? `₹${product.starting_price} (starts at)` : 'No variants'}
-                    </td>
-                    <td style={{ padding: '16px 20px' }}>
-                      <strong style={{ color: isOutOfStock ? 'red' : isLowStock ? '#fa8c16' : '#52c41a' }}>
-                        {stock} units
-                      </strong>
-                    </td>
-                    <td style={{ padding: '16px 20px' }}>
-                      {product.total_stock === null ? (
-                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#fa8c16', fontSize: '12px', fontWeight: 500 }}><ShieldAlert size={14}/> Needs Variants</span>
-                      ) : (
-                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#52c41a', fontSize: '12px', fontWeight: 500 }}><CheckCircle size={14}/> Excellent</span>
-                      )}
-                    </td>
-                    <td style={{ padding: '16px 20px' }}>
-                      <span style={{ 
-                        padding: '4px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 600,
-                        backgroundColor: product.is_active ? '#e6f7ff' : '#f5f5f5',
-                        color: product.is_active ? '#1890ff' : '#888'
-                      }}>
-                        {product.is_active ? 'ACTIVE' : 'DRAFT'}
-                      </span>
-                    </td>
-                    <td style={{ padding: '16px 20px' }}>
-                      <div style={{ display: 'flex', gap: '12px' }}>
-                        <Link to={`/admin/catalog/${product.id}`} style={{ color: '#D4AF37' }}><Edit size={16} /></Link>
-                        <button onClick={() => handleDelete(product.id)} style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer', padding: 0 }}><Trash2 size={16} /></button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })
-            )}
-          </tbody>
-        </table>
+                  return (
+                    <tr key={product.id} style={{ borderBottom: '1px solid #EAEAEA', transition: 'background 0.15s ease' }}>
+                      {/* Product Name */}
+                      <td style={{ padding: '14px 18px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <div style={{ 
+                            width: '42px', height: '42px', backgroundColor: '#f5f3f0', 
+                            borderRadius: '6px', display: 'flex', alignItems: 'center', 
+                            justifyContent: 'center', color: '#aaa', overflow: 'hidden', flexShrink: 0
+                          }}>
+                            {(() => {
+                              const img = product.image_url 
+                                ? (product.image_url.startsWith('http') ? product.image_url : `http://localhost:5000${product.image_url}`)
+                                : `/assets/${product.category_name === 'Spices' ? 'products-spices' : product.category_name === 'Seeds' ? 'products-seeds' : 'products-official'}/${product.slug === 'kashmir-walnut' ? 'snow-walnuts' : product.slug === 'premium-cashew' ? 'jumbo-cashews' : product.packaging_key || product.slug || 'mamra-almonds'}-250g.webp`;
+                              return (
+                                <img
+                                  src={img}
+                                  alt={product.name}
+                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                  onError={(e) => {
+                                    e.currentTarget.onerror = null;
+                                    e.currentTarget.src = '/assets/products-official/mamra-almonds-250g.webp';
+                                  }}
+                                />
+                              );
+                            })()}
+                          </div>
+                          <div>
+                            <strong style={{ display: 'block', color: '#38243F', fontSize: '14.5px' }}>
+                              {product.name}
+                              {product.hindi_name && (
+                                <span style={{ marginLeft: '6px', fontSize: '13px', color: '#8c5825', fontWeight: 500 }}>
+                                  ({product.hindi_name})
+                                </span>
+                              )}
+                            </strong>
+                            <span style={{ fontSize: '11.5px', color: '#888' }}>slug: {product.slug}</span>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Category & Origin */}
+                      <td style={{ padding: '14px 18px' }}>
+                        <span style={{ 
+                          padding: '3px 9px', borderRadius: '4px', fontSize: '11.5px', fontWeight: 600,
+                          backgroundColor: categoryName.toLowerCase() === 'nuts' ? '#fdf4ea' : categoryName.toLowerCase() === 'spices' ? '#fff1f0' : categoryName.toLowerCase() === 'seeds' ? '#f6ffed' : '#f5f5f5',
+                          color: categoryName.toLowerCase() === 'nuts' ? '#d46b08' : categoryName.toLowerCase() === 'spices' ? '#cf1322' : categoryName.toLowerCase() === 'seeds' ? '#389e0d' : '#555',
+                          display: 'inline-block', marginBottom: '3px'
+                        }}>
+                          {categoryName}
+                        </span>
+                        <div style={{ fontSize: '12px', color: '#666' }}>{product.origin || 'India'}</div>
+                      </td>
+
+                      {/* Variants & Prices */}
+                      <td style={{ padding: '14px 18px' }}>
+                        {variants.length > 0 ? (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+                            {variants.map((v, i) => (
+                              <span 
+                                key={i} 
+                                style={{
+                                  padding: '4px 8px',
+                                  borderRadius: '6px',
+                                  backgroundColor: '#f7f6f4',
+                                  border: '1px solid #e5dfd8',
+                                  fontSize: '12px',
+                                  fontFamily: 'DM Sans',
+                                  color: '#38243F',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px'
+                                }}
+                              >
+                                <strong>{v.weight_label}:</strong>
+                                <span style={{ color: '#8c5825', fontWeight: 600 }}>₹{v.price}</span>
+                              </span>
+                            ))}
+                            <button
+                              onClick={() => openPricingModal(product)}
+                              title="Update prices for this product"
+                              style={{
+                                padding: '3px 8px',
+                                backgroundColor: '#fff',
+                                border: '1px dashed #c9b08f',
+                                color: '#8c5825',
+                                borderRadius: '5px',
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '3px'
+                              }}
+                            >
+                              <IndianRupee size={11} /> Edit Prices
+                            </button>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ color: '#fa8c16', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                              <ShieldAlert size={13} /> No price set
+                            </span>
+                            <button
+                              onClick={() => openPricingModal(product)}
+                              style={{
+                                padding: '4px 10px',
+                                backgroundColor: '#38243F',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '5px',
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              + Add Price
+                            </button>
+                          </div>
+                        )}
+                      </td>
+
+                      {/* Stock Level */}
+                      <td style={{ padding: '14px 18px' }}>
+                        <strong style={{ color: isOutOfStock ? '#cf1322' : isLowStock ? '#fa8c16' : '#389e0d' }}>
+                          {stock} units
+                        </strong>
+                      </td>
+
+                      {/* Status */}
+                      <td style={{ padding: '14px 18px' }}>
+                        <span style={{ 
+                          padding: '3px 8px', borderRadius: '12px', fontSize: '11.5px', fontWeight: 600,
+                          backgroundColor: product.is_active ? '#e6f7ff' : '#f5f5f5',
+                          color: product.is_active ? '#096dd9' : '#888'
+                        }}>
+                          {product.is_active ? 'ACTIVE' : 'DRAFT'}
+                        </span>
+                      </td>
+
+                      {/* Actions */}
+                      <td style={{ padding: '14px 18px', textAlign: 'right' }}>
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                          <button 
+                            onClick={() => openPricingModal(product)}
+                            style={{ 
+                              display: 'flex', alignItems: 'center', gap: '4px',
+                              padding: '5px 10px', borderRadius: '5px',
+                              border: '1px solid #c9b08f', backgroundColor: '#fffbf5',
+                              color: '#8c5825', fontSize: '12px', fontWeight: 600, cursor: 'pointer' 
+                            }}
+                            title="Update Prices"
+                          >
+                            <IndianRupee size={13} /> Set Price
+                          </button>
+                          <Link 
+                            to={`/admin/catalog/${product.id}`} 
+                            style={{ 
+                              padding: '5px 8px', borderRadius: '5px', 
+                              border: '1px solid #ddd', backgroundColor: '#fff', 
+                              color: '#38243F', display: 'flex', alignItems: 'center' 
+                            }}
+                            title="Edit Full Details"
+                          >
+                            <Edit size={14} />
+                          </Link>
+                          <button 
+                            onClick={() => handleDelete(product.id, product.name)} 
+                            style={{ 
+                              padding: '5px 8px', borderRadius: '5px', 
+                              border: '1px solid #ffccc7', backgroundColor: '#fff1f0', 
+                              color: '#cf1322', cursor: 'pointer', display: 'flex', alignItems: 'center' 
+                            }}
+                            title="Delete Product"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      {/* ─── QUICK PRICING MODAL ─── */}
+      {pricingModalProduct && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(56, 36, 63, 0.65)',
+          backdropFilter: 'blur(3px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: '#fff',
+            borderRadius: '12px',
+            width: '100%',
+            maxWidth: '680px',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            padding: '28px',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.25)',
+            position: 'relative',
+            border: '1px solid rgba(183, 141, 82, 0.3)'
+          }}>
+            {/* Modal Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid #EAEAEA', paddingBottom: '16px', marginBottom: '20px' }}>
+              <div>
+                <span style={{ 
+                  display: 'inline-block', fontSize: '11px', fontWeight: 700, 
+                  textTransform: 'uppercase', letterSpacing: '0.05em', color: '#D4AF37', marginBottom: '4px' 
+                }}>
+                  Live Price Manager · {pricingModalProduct.category_name}
+                </span>
+                <h2 style={{ fontFamily: 'DM Sans', fontSize: '26px', color: '#38243F', margin: 0 }}>
+                  {pricingModalProduct.name}
+                  {pricingModalProduct.hindi_name && (
+                    <span style={{ fontSize: '18px', fontWeight: 400, color: '#8c5825', marginLeft: '8px' }}>
+                      ({pricingModalProduct.hindi_name})
+                    </span>
+                  )}
+                </h2>
+                <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#666', fontFamily: 'DM Sans' }}>
+                  Set package weights (100g, 250g, 500g, 1kg) and prices in ₹. These update immediately on the website.
+                </p>
+              </div>
+              <button 
+                onClick={() => setPricingModalProduct(null)} 
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', padding: '4px' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Auto 1kg Rate Calculator */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(244, 237, 228, 0.7), rgba(255, 255, 255, 0.95))',
+              border: '1px solid rgba(183, 141, 82, 0.3)',
+              borderRadius: '8px',
+              padding: '16px',
+              marginBottom: '20px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Calculator size={16} color="#8c5825" />
+                    <strong style={{ fontFamily: 'DM Sans', fontSize: '13.5px', color: '#38243F' }}>
+                      1 kg Base Rate Auto-Calculator
+                    </strong>
+                  </div>
+                  <small style={{ color: '#666', fontFamily: 'DM Sans', display: 'block', marginTop: '2px' }}>
+                    Calculates 100g (10%), 250g (25%), 500g (50%), 1kg (100%) automatically.
+                  </small>
+                </div>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#888', fontWeight: 600, fontSize: '13px' }}>₹</span>
+                    <input 
+                      type="number"
+                      placeholder="e.g. 1800"
+                      value={base1kgRate}
+                      onChange={(e) => setBase1kgRate(e.target.value)}
+                      style={{
+                        padding: '8px 10px 8px 24px',
+                        width: '120px',
+                        borderRadius: '6px',
+                        border: '1px solid #c9b08f',
+                        fontSize: '13.5px',
+                        fontWeight: 600,
+                        fontFamily: 'DM Sans'
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={apply1kgAutoCalculation}
+                    style={{
+                      padding: '8px 14px',
+                      backgroundColor: '#38243F',
+                      color: '#FDFBF7',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontFamily: 'DM Sans',
+                      fontSize: '12.5px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    <Sparkles size={14} color="#D4AF37" /> Auto-Fill
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Preset Buttons */}
+            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '12px', color: '#666', fontWeight: 600, fontFamily: 'DM Sans' }}>Quick Presets:</span>
+              <button
+                type="button"
+                onClick={() => applyPreset('nuts-seeds')}
+                style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #ddd', backgroundColor: '#f9f9f9', fontSize: '11.5px', cursor: 'pointer', fontFamily: 'DM Sans' }}
+              >
+                🥜 Nuts / Seeds (100g, 250g, 500g, 1kg)
+              </button>
+              <button
+                type="button"
+                onClick={() => applyPreset('spices')}
+                style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #ddd', backgroundColor: '#f9f9f9', fontSize: '11.5px', cursor: 'pointer', fontFamily: 'DM Sans' }}
+              >
+                🌶️ Spices (50g, 100g, 250g, 500g)
+              </button>
+              <button
+                type="button"
+                onClick={() => applyPreset('saffron')}
+                style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #ddd', backgroundColor: '#f9f9f9', fontSize: '11.5px', cursor: 'pointer', fontFamily: 'DM Sans' }}
+              >
+                ✨ Saffron (1g, 2g, 5g, 10g)
+              </button>
+            </div>
+
+            {/* Variant Table */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 1.2fr 40px', gap: '10px', padding: '0 6px', fontSize: '12px', fontWeight: 600, color: '#666', fontFamily: 'DM Sans' }}>
+                <span>Weight / Size *</span>
+                <span>Price (₹) *</span>
+                <span>MRP / Strike Price</span>
+                <span>SKU Code</span>
+                <span></span>
+              </div>
+
+              {editVariants.map((v, idx) => (
+                <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 1.2fr 40px', gap: '10px', alignItems: 'center' }}>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. 250g" 
+                    value={v.weight_label}
+                    onChange={(e) => handleVariantFieldChange(idx, 'weight_label', e.target.value)}
+                    style={{ padding: '8px 10px', borderRadius: '6px', border: '1px solid #ddd', fontFamily: 'DM Sans', fontSize: '13px' }}
+                  />
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', color: '#888', fontSize: '12px' }}>₹</span>
+                    <input 
+                      type="number" 
+                      placeholder="Price" 
+                      value={v.price}
+                      onChange={(e) => handleVariantFieldChange(idx, 'price', e.target.value)}
+                      style={{ padding: '8px 10px 8px 20px', width: '100%', borderRadius: '6px', border: '1px solid #c9b08f', fontFamily: 'DM Sans', fontSize: '13px', fontWeight: 600 }}
+                    />
+                  </div>
+                  <input 
+                    type="number" 
+                    placeholder="Optional" 
+                    value={v.compare_at_price || ''}
+                    onChange={(e) => handleVariantFieldChange(idx, 'compare_at_price', e.target.value)}
+                    style={{ padding: '8px 10px', borderRadius: '6px', border: '1px solid #ddd', fontFamily: 'DM Sans', fontSize: '13px' }}
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="SKU" 
+                    value={v.sku || ''}
+                    onChange={(e) => handleVariantFieldChange(idx, 'sku', e.target.value)}
+                    style={{ padding: '8px 10px', borderRadius: '6px', border: '1px solid #ddd', fontFamily: 'DM Sans', fontSize: '12px', color: '#555' }}
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => removeVariantRow(idx)}
+                    style={{ background: 'none', border: 'none', color: '#cf1322', cursor: 'pointer', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Add Variant Button */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <button 
+                type="button" 
+                onClick={addVariantRow}
+                style={{ 
+                  display: 'flex', alignItems: 'center', gap: '6px', 
+                  padding: '8px 14px', borderRadius: '6px', border: '1px dashed #38243F', 
+                  backgroundColor: '#fff', color: '#38243F', fontSize: '12.5px', fontWeight: 600, 
+                  cursor: 'pointer', fontFamily: 'DM Sans' 
+                }}
+              >
+                <Plus size={15} /> Add Another Weight
+              </button>
+            </div>
+
+            {/* Modal Actions */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', borderTop: '1px solid #EAEAEA', paddingTop: '16px' }}>
+              <button 
+                type="button" 
+                onClick={() => setPricingModalProduct(null)}
+                style={{ 
+                  padding: '10px 18px', borderRadius: '6px', border: '1px solid #ddd', 
+                  backgroundColor: '#fff', color: '#555', fontSize: '13.5px', 
+                  fontWeight: 600, cursor: 'pointer', fontFamily: 'DM Sans' 
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                onClick={handleSavePrices}
+                disabled={savingPrices}
+                style={{ 
+                  padding: '10px 22px', borderRadius: '6px', border: 'none', 
+                  backgroundColor: '#38243F', color: '#FDFBF7', fontSize: '13.5px', 
+                  fontWeight: 600, cursor: 'pointer', fontFamily: 'DM Sans',
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                  boxShadow: '0 4px 12px rgba(56,36,63,0.18)'
+                }}
+              >
+                <Check size={16} color="#D4AF37" />
+                {savingPrices ? 'Saving to Database...' : 'Save & Publish Prices'}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -37,7 +37,7 @@ export default function AdminLogin() {
     <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: '#38243F', color: '#FDFBF7' }}>
       <div style={{ width: '100%', maxWidth: '400px', padding: '40px', backgroundColor: '#fff', color: '#38243F', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h1 style={{ fontFamily: 'Cormorant Garamond', fontSize: '32px', margin: '0 0 8px 0', color: '#38243F' }}>NAAVORI</h1>
+          <h1 style={{ fontFamily: 'DM Sans', fontSize: '32px', margin: '0 0 8px 0', color: '#38243F' }}>NAAVORI</h1>
           <p style={{ fontFamily: 'DM Sans', fontSize: '14px', color: '#666', margin: 0 }}>Admin Portal Access</p>
         </div>
         

@@ -102,7 +102,12 @@ export const applyCoupon = async (req, res) => {
     // discount shouldn't exceed cart total
     if (discount > cart_total) discount = cart_total;
     
-    res.json({ success: true, data: { id: coupon.id, discount_amount: Math.round(discount), type: coupon.type, value: coupon.value } });
+    res.json({
+      success: true,
+      discount: Math.round(discount),
+      coupon: { id: coupon.id, code: coupon.code, type: coupon.type, value: coupon.value },
+      data: { id: coupon.id, discount_amount: Math.round(discount), type: coupon.type, value: coupon.value }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Failed to apply coupon' });

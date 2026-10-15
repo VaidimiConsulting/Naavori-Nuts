@@ -70,7 +70,7 @@ export default function AdminCoupons() {
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontFamily: 'Cormorant Garamond', fontSize: '32px', color: '#38243F', margin: 0 }}>Coupons & Discounts</h1>
+          <h1 style={{ fontFamily: 'DM Sans', fontSize: '32px', color: '#38243F', margin: 0 }}>Coupons & Discounts</h1>
           <p style={{ fontFamily: 'DM Sans', color: '#666', margin: '4px 0 0 0' }}>Manage promo codes and special offers</p>
         </div>
         <button 
@@ -140,7 +140,7 @@ export default function AdminCoupons() {
       {showModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
           <div style={{ backgroundColor: '#fff', borderRadius: '8px', padding: '24px', width: '500px', maxWidth: '90%' }}>
-            <h2 style={{ fontFamily: 'Cormorant Garamond', fontSize: '24px', color: '#38243F', margin: '0 0 24px 0' }}>Create New Coupon</h2>
+            <h2 style={{ fontFamily: 'DM Sans', fontSize: '24px', color: '#38243F', margin: '0 0 24px 0' }}>Create New Coupon</h2>
             <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: 'DM Sans' }}>
               
               <label style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '14px', fontWeight: 500 }}>

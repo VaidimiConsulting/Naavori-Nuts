@@ -46,12 +46,32 @@ export const createProduct = async (req, res) => {
   }
 };
 
-export const uploadImage = (req, res) => {
+export const uploadImage = async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: 'No image uploaded' });
   }
   // Return URL that frontend can directly use
   const imageUrl = `/uploads/products/${req.file.filename}`;
+  try {
+    const { product_id, slug } = req.body;
+    let targetProductId = product_id;
+    if (!targetProductId && slug) {
+      const pool = (await import('../config/db.js')).default;
+      const [p] = await pool.query('SELECT id FROM products WHERE slug = ?', [slug]);
+      if (p.length > 0) targetProductId = p[0].id;
+    }
+    if (targetProductId) {
+      const pool = (await import('../config/db.js')).default;
+      const imgId = crypto.randomUUID();
+      await pool.query(
+        'INSERT INTO product_images (id, product_id, image_url, sort_order) VALUES (?, ?, ?, 0)',
+        [imgId, targetProductId, imageUrl]
+      );
+    }
+  } catch (err) {
+    console.warn('Image DB link note:', err.message);
+  }
+
   res.json({ 
     success: true, 
     message: 'Image uploaded successfully', 
@@ -67,6 +87,20 @@ export const updateProduct = async (req, res) => {
   } catch (error) {
     console.error('Error updating product:', error);
     res.status(500).json({ success: false, message: 'Failed to update product' });
+  }
+};
+
+export const updatePricing = async (req, res) => {
+  try {
+    const { variants } = req.body;
+    if (!variants || !Array.isArray(variants)) {
+      return res.status(400).json({ success: false, message: 'Variants array is required' });
+    }
+    const product = await productRepository.updateProductPricing(req.params.id, variants);
+    res.json({ success: true, data: product, message: 'Product prices updated successfully' });
+  } catch (error) {
+    console.error('Error updating pricing:', error);
+    res.status(500).json({ success: false, message: error.message || 'Failed to update pricing' });
   }
 };
 

@@ -23,7 +23,7 @@ SELECT UUID(), id, CONCAT(slug, '-250g'), '250g',
   CASE slug
     WHEN 'byadgi-chilli' THEN 350
     WHEN 'ceylon-cinnamon' THEN 650
-    WHEN 'golden-cumin' THEN 250
+    WHEN 'golden-cumin' THEN 102
     WHEN 'himalayan-bay-leaf' THEN 150
     WHEN 'idukki-green-cardamom' THEN 2500
     WHEN 'kashmir-saffron' THEN 4500
@@ -32,7 +32,7 @@ SELECT UUID(), id, CONCAT(slug, '-250g'), '250g',
     WHEN 'malabar-nutmeg' THEN 800
     WHEN 'rajasthan-coriander' THEN 180
     WHEN 'royal-garam-masala' THEN 500
-    WHEN 'tellicherry-black-pepper' THEN 600
-    WHEN 'zanzibar-cloves' THEN 950
+    WHEN 'tellicherry-black-pepper' THEN 289
+    WHEN 'zanzibar-cloves' THEN 368
   END, 100
 FROM products WHERE slug IN ('byadgi-chilli', 'ceylon-cinnamon', 'golden-cumin', 'himalayan-bay-leaf', 'idukki-green-cardamom', 'kashmir-saffron', 'lakadong-turmeric', 'lucknow-fennel', 'malabar-nutmeg', 'rajasthan-coriander', 'royal-garam-masala', 'tellicherry-black-pepper', 'zanzibar-cloves');

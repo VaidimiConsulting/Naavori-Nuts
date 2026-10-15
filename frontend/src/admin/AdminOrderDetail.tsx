@@ -33,6 +33,11 @@ export default function AdminOrderDetail() {
     }
   };
 
+  const handleDownloadInvoice = () => {
+    const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+    window.open(`${baseURL}/admin/orders/${id}/invoice`, '_blank');
+  };
+
   if (loading) return <div style={{ padding: '24px', fontFamily: 'DM Sans' }}>Loading order details...</div>;
   if (!order) return <div style={{ padding: '24px', fontFamily: 'DM Sans' }}>Order not found.</div>;
 
@@ -43,7 +48,7 @@ export default function AdminOrderDetail() {
           <ArrowLeft size={24} />
         </button>
         <div>
-          <h1 style={{ fontFamily: 'Cormorant Garamond', fontSize: '32px', color: '#38243F', margin: 0 }}>
+          <h1 style={{ fontFamily: 'DM Sans', fontSize: '32px', color: '#38243F', margin: 0 }}>
             Order #{order.order_number}
           </h1>
           <p style={{ fontFamily: 'DM Sans', color: '#666', margin: '4px 0 0 0' }}>
@@ -51,11 +56,17 @@ export default function AdminOrderDetail() {
           </p>
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
-          <button style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '6px', fontFamily: 'DM Sans', cursor: 'pointer' }}>
-            <Printer size={16} /> Print Invoice
+          <button 
+            onClick={handleDownloadInvoice}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: '#38243F', color: '#FDFBF7', border: 'none', borderRadius: '6px', fontFamily: 'DM Sans', cursor: 'pointer', fontWeight: 600 }}
+          >
+            <Printer size={16} /> Download Tax Invoice
           </button>
-          <button style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '6px', fontFamily: 'DM Sans', cursor: 'pointer' }}>
-            <Printer size={16} /> Print Label
+          <button 
+            onClick={() => window.print()}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '6px', fontFamily: 'DM Sans', cursor: 'pointer' }}
+          >
+            <Printer size={16} /> Print View
           </button>
         </div>
       </div>

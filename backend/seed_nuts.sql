@@ -18,10 +18,10 @@ INSERT INTO product_variants (id, product_id, sku, weight_label, price, stock)
 SELECT UUID(), id, CONCAT(slug, '-250g'), '250g', 
   CASE slug
     WHEN 'dry-coconut' THEN 400
-    WHEN 'fox-nuts-makhana' THEN 350
-    WHEN 'jumbo-cashews' THEN 800
-    WHEN 'mamra-almonds' THEN 1200
-    WHEN 'pistachios' THEN 900
+    WHEN 'fox-nuts-makhana' THEN 340
+    WHEN 'jumbo-cashews' THEN 326
+    WHEN 'mamra-almonds' THEN 399
+    WHEN 'pistachios' THEN 572
     WHEN 'raisins' THEN 450
     WHEN 'snow-walnuts' THEN 1100
   END, 100

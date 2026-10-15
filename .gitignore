@@ -42,3 +42,7 @@ uploads/*
 # Temporary files
 *.tmp
 *.temp
+
+# Backups and archives
+frontend_old_backup/
+*.zip

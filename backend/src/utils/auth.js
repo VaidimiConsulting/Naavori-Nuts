@@ -14,11 +14,11 @@ export const comparePassword = async (password, hash) => {
   return await bcrypt.compare(password, hash);
 };
 
-export const generateAccessToken = (user) => {
+export const generateAccessToken = (user, expiresIn = '7d') => {
   return jwt.sign(
     { id: user.id, role: user.role, email: user.email },
     process.env.JWT_SECRET,
-    { expiresIn: '15m' }
+    { expiresIn }
   );
 };
 

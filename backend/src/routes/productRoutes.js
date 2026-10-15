@@ -56,6 +56,7 @@ router.post(
 );
 router.post('/', requireAuth, requireRole(['owner', 'manager']), productController.createProduct);
 router.put('/:id', requireAuth, requireRole(['owner', 'manager']), productController.updateProduct);
+router.patch('/:id/pricing', requireAuth, requireRole(['owner', 'manager']), productController.updatePricing);
 router.delete('/:id', requireAuth, requireRole(['owner', 'manager']), productController.deleteProduct);
 
 // ─── Multer error handler ────────────────────────────────────────────────────

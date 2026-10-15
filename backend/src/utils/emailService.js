@@ -128,7 +128,7 @@ export const sendOrderConfirmationEmail = async (orderData, userEmail) => {
                     <p style="font-size:13px;color:#888;margin:0;">🌿 Hand-selected · 100% Natural · No Preservatives</p>
                     <p style="font-size:13px;color:#aaa;margin:8px 0 0;">
                       Questions? Write to us at 
-                      <a href="mailto:concierge@naavorinuts.com" style="color:#D4AF37;text-decoration:none;">concierge@naavorinuts.com</a>
+                      <a href="mailto:concierge@naavorinuts.com" style="color:#D4AF37;text-decoration:none;">concierge@naavorinuts.com</a> or call <span style="color:#D4AF37;">+91 83188 29334 / +91 84481 70969</span>
                     </p>
                   </td>
                 </tr>

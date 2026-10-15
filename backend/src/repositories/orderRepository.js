@@ -1,41 +1,107 @@
+import crypto from 'crypto';
 import pool from '../config/db.js';
 
-export const getAllOrders = async (filters, page = 1, limit = 20) => {
+export const getAllOrders = async (filters = {}, page = 1, limit = 50) => {
   const offset = (page - 1) * limit;
-  let query = `
-    SELECT 
-      id, order_number, shipping_name, shipping_city, shipping_pin_code, 
-      total, payment_method, payment_status, order_status, created_at 
-    FROM orders 
-    WHERE 1=1
-  `;
-  const params = [];
+  let baseWhere = ' WHERE 1=1';
+  const filterParams = [];
 
   if (filters.status) {
-    query += ' AND order_status = ?';
-    params.push(filters.status);
+    baseWhere += ' AND order_status = ?';
+    filterParams.push(filters.status);
   }
   if (filters.search) {
-    query += ' AND (order_number LIKE ? OR shipping_phone LIKE ? OR shipping_name LIKE ?)';
-    params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+    baseWhere += ' AND (order_number LIKE ? OR shipping_phone LIKE ? OR shipping_name LIKE ? OR shipping_city LIKE ?)';
+    filterParams.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+  }
+  if (filters.date) {
+    baseWhere += ' AND DATE(created_at) = ?';
+    filterParams.push(filters.date);
+  } else if (filters.month) {
+    baseWhere += " AND DATE_FORMAT(created_at, '%Y-%m') = ?";
+    filterParams.push(filters.month);
+  } else if (filters.startDate || filters.endDate) {
+    if (filters.startDate) {
+      baseWhere += ' AND DATE(created_at) >= ?';
+      filterParams.push(filters.startDate);
+    }
+    if (filters.endDate) {
+      baseWhere += ' AND DATE(created_at) <= ?';
+      filterParams.push(filters.endDate);
+    }
+  }
+  if (filters.city) {
+    baseWhere += ' AND LOWER(shipping_city) = LOWER(?)';
+    filterParams.push(filters.city);
+  }
+  if (filters.state) {
+    baseWhere += ' AND LOWER(shipping_state) = LOWER(?)';
+    filterParams.push(filters.state);
   }
 
-  query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
-  params.push(limit, offset);
+  // 1. Fetch paginated orders
+  const ordersQuery = `
+    SELECT 
+      id, order_number, shipping_name, shipping_phone, guest_email,
+      shipping_address_line1, shipping_city, shipping_state, shipping_pin_code,
+      subtotal, discount, shipping_charge, gst_amount, total,
+      payment_method, payment_status, order_status, created_at 
+    FROM orders 
+    ${baseWhere}
+    ORDER BY created_at DESC 
+    LIMIT ? OFFSET ?
+  `;
+  const [rows] = await pool.query(ordersQuery, [...filterParams, limit, offset]);
 
-  const [rows] = await pool.query(query, params);
-  
-  // Count query
-  let countQuery = 'SELECT COUNT(*) as total FROM orders WHERE 1=1';
-  const countParams = [];
-  if (filters.status) { countQuery += ' AND order_status = ?'; countParams.push(filters.status); }
-  if (filters.search) { 
-    countQuery += ' AND (order_number LIKE ? OR shipping_phone LIKE ? OR shipping_name LIKE ?)';
-    countParams.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+  // 2. Fetch total count & total revenue for the current filters
+  const countQuery = `
+    SELECT 
+      COUNT(*) as total,
+      COALESCE(SUM(total), 0) as total_revenue
+    FROM orders 
+    ${baseWhere}
+  `;
+  const [[summaryRow]] = await pool.query(countQuery, filterParams);
+
+  // 3. Location breakdown ("kha kha kitne order aaye")
+  const locationQuery = `
+    SELECT 
+      COALESCE(NULLIF(TRIM(shipping_city), ''), 'Unknown') as city,
+      COALESCE(NULLIF(TRIM(shipping_state), ''), 'India') as state,
+      COUNT(*) as order_count,
+      COALESCE(SUM(total), 0) as total_amount
+    FROM orders 
+    ${baseWhere}
+    GROUP BY city, state
+    ORDER BY order_count DESC, total_amount DESC
+    LIMIT 30
+  `;
+  const [locationBreakdown] = await pool.query(locationQuery, filterParams);
+
+  // 4. Status breakdown
+  const statusQuery = `
+    SELECT 
+      order_status, 
+      COUNT(*) as count 
+    FROM orders 
+    ${baseWhere}
+    GROUP BY order_status
+  `;
+  const [statusRows] = await pool.query(statusQuery, filterParams);
+  const statusCounts = {};
+  for (const s of statusRows) {
+    statusCounts[s.order_status] = s.count;
   }
-  const [[{ total }]] = await pool.query(countQuery, countParams);
 
-  return { orders: rows, total, page, limit };
+  return {
+    orders: rows,
+    total: summaryRow?.total || 0,
+    totalRevenue: parseFloat(summaryRow?.total_revenue || 0),
+    locationBreakdown,
+    statusCounts,
+    page,
+    limit
+  };
 };
 
 export const getOrderById = async (id) => {

@@ -10,15 +10,25 @@ if (!global.crypto) {
 
 export const getOrders = async (req, res) => {
   try {
-    const { status, search, page, limit } = req.query;
+    const { status, search, date, month, startDate, endDate, city, state, page, limit } = req.query;
     
     const result = await orderRepository.getAllOrders(
-      { status, search }, 
+      { status, search, date, month, startDate, endDate, city, state }, 
       parseInt(page) || 1, 
-      parseInt(limit) || 20
+      parseInt(limit) || 50
     );
 
-    res.json({ success: true, data: result.orders, meta: { total: result.total, page: result.page, limit: result.limit } });
+    res.json({ 
+      success: true, 
+      data: result.orders, 
+      summary: {
+        total_orders: result.total,
+        total_revenue: result.totalRevenue,
+        location_breakdown: result.locationBreakdown,
+        status_breakdown: result.statusCounts,
+      },
+      meta: { total: result.total, page: result.page, limit: result.limit } 
+    });
   } catch (error) {
     console.error('Error fetching orders:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch orders' });
@@ -72,18 +82,69 @@ export const updateStatus = async (req, res) => {
 export const createOrder = async (req, res) => {
   try {
     const orderData = req.body;
-    
-    // Basic validation
-    console.log("RECEIVED ORDER DATA:", orderData);
-    if (!orderData.shipping_name || !orderData.shipping_phone || !orderData.items || !orderData.items.length) {
-      return res.status(400).json({ success: false, message: 'Missing required order details' });
+
+    // 1. Mandatory Authentication Check
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Authentication required. Please create an account or sign in before placing your order.' 
+      });
     }
 
-    if (req.user) {
-      orderData.user_id = req.user.id;
-      orderData.guest_email = req.user.email;
-    } else {
-      orderData.guest_email = orderData.shipping_email;
+    // 2. Mandatory Mobile Number Check
+    const cleanPhone = (orderData.shipping_phone || '').trim().replace(/[^0-9]/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'A valid 10-digit mobile number is mandatory to place an order.' 
+      });
+    }
+
+    // 3. Mandatory Delivery Address Check
+    if (!orderData.shipping_address || !orderData.shipping_address.trim()) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Delivery address line is mandatory to place an order.' 
+      });
+    }
+
+    if (!orderData.shipping_city || !orderData.shipping_city.trim()) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'City is mandatory to place an order.' 
+      });
+    }
+
+    if (!orderData.shipping_pin_code || !orderData.shipping_pin_code.trim()) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'PIN code is mandatory to place an order.' 
+      });
+    }
+
+    if (!orderData.items || !orderData.items.length) {
+      return res.status(400).json({ success: false, message: 'Your shopping bag is empty.' });
+    }
+
+    orderData.user_id = req.user.id;
+    orderData.guest_email = req.user.email || orderData.shipping_email;
+    orderData.shipping_phone = cleanPhone;
+
+    // Optional: Auto-save address to user's address book if not already saved
+    try {
+      const [existing] = await pool.query(
+        'SELECT id FROM addresses WHERE user_id = ? AND address_line1 = ? LIMIT 1',
+        [req.user.id, orderData.shipping_address]
+      );
+      if (existing.length === 0) {
+        const addrId = crypto.randomUUID();
+        await pool.query(
+          'INSERT INTO addresses (id, user_id, full_name, phone, address_line1, city, state, pin_code, is_default) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)',
+          [addrId, req.user.id, orderData.shipping_name || 'Customer', cleanPhone, orderData.shipping_address, orderData.shipping_city, orderData.shipping_state || 'India', orderData.shipping_pin_code]
+        );
+      }
+    } catch (addrErr) {
+      console.warn('Address auto-save note:', addrErr.message);
     }
 
     const orderId = await orderRepository.createOrder(orderData);
@@ -128,4 +189,37 @@ export const getCustomers = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch customers' });
   }
 };
+
+export const downloadInvoice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await orderRepository.getOrderById(id);
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="Naavori-Invoice-${order.order_number}.pdf"`);
+
+    const { generateOrderInvoicePDF } = await import('../utils/invoiceService.js');
+    await generateOrderInvoicePDF(order, res);
+  } catch (error) {
+    console.error('Error generating PDF invoice:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, message: 'Failed to generate PDF invoice' });
+    }
+  }
+};
+
+export const getPackingOrders = async (req, res) => {
+  try {
+    const orders = await orderRepository.getAllOrders({ status: 'placed' });
+    res.json({ success: true, data: orders });
+  } catch (error) {
+    console.error('Error fetching packing orders:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch packing orders' });
+  }
+};
+
 

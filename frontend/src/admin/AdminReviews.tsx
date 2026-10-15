@@ -37,7 +37,7 @@ export default function AdminReviews() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontFamily: 'Cormorant Garamond', fontSize: '32px', color: '#38243F', margin: 0 }}>Customer Reviews</h1>
+          <h1 style={{ fontFamily: 'DM Sans', fontSize: '32px', color: '#38243F', margin: 0 }}>Customer Reviews</h1>
           <p style={{ fontFamily: 'DM Sans', color: '#666', margin: '4px 0 0 0' }}>Moderate user feedback</p>
         </div>
       </div>

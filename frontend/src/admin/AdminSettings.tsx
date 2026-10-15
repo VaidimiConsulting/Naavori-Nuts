@@ -6,7 +6,8 @@ export default function AdminSettings() {
   const [settings, setSettings] = useState({
     store_name: 'NAAVORI NUTS',
     support_email: 'concierge@naavorinuts.com',
-    support_phone: '+91 838819334',
+    support_phone: '+91 83188 29334 / +91 84481 70969',
+    owner_phone: '+91 83188 29334, +91 84481 70969',
     currency: 'INR',
     tax_rate: '5',
     free_shipping_threshold: '',
@@ -44,7 +45,7 @@ export default function AdminSettings() {
     <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
         <div>
-          <h1 style={{ fontFamily: 'Cormorant Garamond', fontSize: '32px', color: '#38243F', margin: 0 }}>Store Settings</h1>
+          <h1 style={{ fontFamily: 'DM Sans', fontSize: '32px', color: '#38243F', margin: 0 }}>Store Settings</h1>
           <p style={{ fontFamily: 'DM Sans', color: '#666', margin: '4px 0 0 0' }}>Configure global store preferences</p>
         </div>
         <button 
@@ -80,6 +81,11 @@ export default function AdminSettings() {
                 <input type="text" name="support_phone" value={settings.support_phone} onChange={handleChange} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontFamily: 'DM Sans' }} />
               </label>
             </div>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontFamily: 'DM Sans', fontSize: '14px', color: '#38243F', fontWeight: 500 }}>
+              Owner Direct Phone Numbers
+              <input type="text" name="owner_phone" value={settings.owner_phone} onChange={handleChange} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontFamily: 'DM Sans' }} placeholder="+91 83188 29334, +91 84481 70969" />
+              <small style={{ color: '#888' }}>Official contact numbers displayed on contact page and invoices.</small>
+            </label>
           </div>
         </section>
 

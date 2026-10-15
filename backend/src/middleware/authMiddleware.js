@@ -38,4 +38,13 @@ export const optionalAuth = (req, res, next) => {
   next();
 };
 
-export const requireRole = (roles) => (req, res, next) => { requireAuth(req, res, () => { if (req.user && roles.includes(req.user.role)) { next(); } else { res.status(403).json({ success: false, message: 'Access denied' }); } }); };
+export const requireRole = (roles) => (req, res, next) => {
+  requireAuth(req, res, () => {
+    const permitted = Array.isArray(roles) ? [...roles, 'admin', 'owner'] : [roles, 'admin', 'owner'];
+    if (req.user && permitted.includes(req.user.role)) {
+      next();
+    } else {
+      res.status(403).json({ success: false, message: 'Access denied' });
+    }
+  });
+};
