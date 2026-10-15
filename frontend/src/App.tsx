@@ -43,7 +43,7 @@ import { PolicyModal, PolicyType } from './components/PolicyModal';
 import { PinCodeChecker } from './components/PinCodeChecker';
 
 type Category = 'Nuts' | 'Seeds' | 'Spices';
-type Weight = '100g' | '250g' | '500g' | '1 gm' | '10 gm' | '29 gm' | '50 gm' | '100 gm' | string;
+type Weight = '100g' | '250g' | '500g' | '1kg' | '1 gm' | '10 gm' | '29 gm' | '50 gm' | '100 gm' | string;
 type BuilderKind = 'nut-mix' | 'spice-blend' | 'seed-mix';
 type OriginKey = 'Goa' | 'Kashmir' | 'Kerala' | 'Bihar' | 'Rajasthan' | 'Gujarat' | 'Madhya Pradesh' | 'Uttarakhand';
 
@@ -117,7 +117,7 @@ const initialProducts: Product[] = [
   { id: 'andhra-pradesh-cumin-seeds', name: 'Andhra Pradesh Cumin Seeds', category: 'Seeds', origin: 'Andhra Pradesh', description: 'Fragrant cumin seeds with a warm, earthy character and a clean aromatic finish.', price: '₹102', rating: '4.8', imagePosition: '50% 50%', packagingKey: 'andhra-pradesh-cumin-seeds', variants: [{ weight_label: '100g', price: 41 }, { weight_label: '250g', price: 102 }, { weight_label: '500g', price: 203 }] },
   { id: 'uttar-pradesh-fennel-seeds', name: 'Uttar Pradesh Fennel Seeds', category: 'Seeds', origin: 'Uttar Pradesh', description: 'Sweet fennel seeds with a fresh aniseed lift and a delicate, satisfying crunch.', price: '₹320', rating: '4.8', imagePosition: '50% 50%', packagingKey: 'uttar-pradesh-fennel-seeds' },
   { id: 'kerala-basil-seeds', name: 'Kerala Basil Seeds', category: 'Seeds', origin: 'Kerala', description: 'Cooling basil seeds with a clean texture and a quietly refreshing character.', price: '₹420', rating: '4.8', imagePosition: '50% 50%', packagingKey: 'kerala-basil-seeds', tag: 'Coastal harvest' },
-  { id: 'bihar-melon-seeds', name: 'Bihar Melon Seeds', category: 'Seeds', origin: 'Bihar', description: 'Creamy melon seeds with a gentle sweetness and a rich, elegant bite.', price: '₹620', rating: '4.9', imagePosition: '50% 50%', packagingKey: 'bihar-melon-seeds' },
+  { id: 'melon-seeds', name: 'Melon Seeds', category: 'Seeds', origin: 'Bihar', description: 'Ivory melon seeds (Magaz) carefully cleaned and sun-dried for a gentle sweetness and rich, elegant bite. Perfect for royal sweets and daily nutrition.', price: '₹188', rating: '4.9', imagePosition: '50% 50%', packagingKey: 'melon-seeds', tag: 'Royal Magaz', variants: [{ weight_label: '100g', price: 75 }, { weight_label: '250g', price: 188 }, { weight_label: '500g', price: 375 }, { weight_label: '1kg', price: 750 }] },
   { id: 'himachal-hemp-hearts', name: 'Himachal Hemp Hearts', category: 'Seeds', origin: 'Himachal Pradesh', description: 'Tender hemp hearts with a delicate nuttiness and a nourishing, high-valley character.', price: '₹720', rating: '4.9', imagePosition: '50% 50%', packagingKey: 'himachal-hemp-hearts', tag: 'New ritual' },
   { id: 'lakadong-turmeric', name: 'Lakadong Turmeric', category: 'Spices', origin: 'Meghalaya', description: 'A golden single-origin turmeric with deep colour, warm character and an earthy finish.', price: '₹380', rating: '4.9', imagePosition: '50% 50%', packagingKey: 'lakadong-turmeric', tag: 'Single origin' },
   { id: 'golden-cumin', name: 'Golden Cumin', category: 'Spices', origin: 'Gujarat', description: 'Aromatic cumin with a toasted warmth, selected from Gujarat for everyday cooking.', price: '₹102', rating: '4.8', imagePosition: '50% 50%', packagingKey: 'golden-cumin', variants: [{ weight_label: '100g', price: 41 }, { weight_label: '250g', price: 102 }, { weight_label: '500g', price: 203 }] },
@@ -150,6 +150,8 @@ const initialProducts: Product[] = [
   { id: 'dalchini-paper', name: 'Dalchini (Paper)', category: 'Spices', origin: 'Kerala', description: 'Delicate paper-thin true quill cinnamon rolls with sweet fragrant perfume and zero pungent bite.', price: '₹240', rating: '4.9', imagePosition: '50% 50%', packagingKey: 'dalchini-paper', tag: 'Paper Quill', variants: [{ weight_label: '100g', price: 100 }, { weight_label: '250g', price: 240 }, { weight_label: '500g', price: 480 }] },
   { id: 'rai', name: 'Rai', category: 'Spices', origin: 'Rajasthan', description: 'Tiny pungent small mustard seeds that pop with nutty aroma and sharp heat in traditional tempering.', price: '₹45', rating: '4.8', imagePosition: '50% 50%', packagingKey: 'rai', tag: 'Sharp Tempering', variants: [{ weight_label: '100g', price: 20 }, { weight_label: '250g', price: 45 }, { weight_label: '500g', price: 90 }] },
   { id: 'posta-dana', name: 'Posta Dana', category: 'Seeds', origin: 'Madhya Pradesh', description: 'Creamy ivory poppy seeds (Khus Khus) revered for cooling richness, royal gravies, and traditional sweets.', price: '₹450', rating: '5.0', imagePosition: '50% 50%', packagingKey: 'posta-dana', tag: 'Ivory Pearls', variants: [{ weight_label: '100g', price: 180 }, { weight_label: '250g', price: 450 }, { weight_label: '500g', price: 900 }] },
+  { id: 'khadi-haldi', name: 'Khadi Haldi', category: 'Spices', origin: 'Varanasi', description: 'Pure whole Khadi Haldi (turmeric fingers) hand-selected for high natural curcumin, vibrant golden colour, and rich earthen warmth.', price: '₹88', rating: '4.9', imagePosition: '50% 50%', packagingKey: 'khadi-haldi', tag: 'Pure Harvest', variants: [{ weight_label: '100g', price: 35 }, { weight_label: '250g', price: 88 }, { weight_label: '500g', price: 175 }, { weight_label: '1kg', price: 350 }] },
+  { id: 'kasuri-methi', name: 'Kasuri Methi', category: 'Spices', origin: 'Nagaur', description: 'Authentic sun-dried Kasuri Methi hand-harvested from Nagaur, celebrated for its intense fragrance, deep herbal flavour, and soothing culinary finish.', price: '₹85', rating: '4.9', imagePosition: '50% 50%', packagingKey: 'kasuri-methi', tag: 'Nagaur Harvest', variants: [{ weight_label: '100g', price: 34 }, { weight_label: '250g', price: 85 }, { weight_label: '500g', price: 170 }, { weight_label: '1kg', price: 340 }] },
 ];
 
 let globalCatalogue: Product[] = initialProducts;
@@ -158,6 +160,7 @@ const weights: { label: Weight; multiplier: number }[] = [
   { label: '100g', multiplier: 0.10 },
   { label: '250g', multiplier: 0.25 },
   { label: '500g', multiplier: 0.50 },
+  { label: '1kg', multiplier: 1.00 },
 ];
 
 const slugPackagingMap: Record<string, string> = {
@@ -222,6 +225,15 @@ const slugPackagingMap: Record<string, string> = {
   'posta-dana': 'posta-dana',
   'poppy-seeds': 'posta-dana',
   'khus-khus': 'posta-dana',
+  'khadi-haldi': 'khadi-haldi',
+  'haldi': 'khadi-haldi',
+  'turmeric': 'khadi-haldi',
+  'melon-seeds': 'melon-seeds',
+  'bihar-melon-seeds': 'melon-seeds',
+  'kasuri-methi': 'kasuri-methi',
+  'kasturi-methi': 'kasuri-methi',
+  'methi': 'kasuri-methi',
+  'fenugreek': 'kasuri-methi',
 };
 
 const defaultFallbackPouch = (category?: string) => {
@@ -248,7 +260,7 @@ const productImage = (product: Product, weight: Weight = '250g') => {
     return asset(`products-spices/kashmir-saffron-${cleanW}.webp`);
   }
 
-  const imgWeight = weight === '500g' ? '500g' : weight === '100g' ? '100g' : '250g';
+  const imgWeight = weight === '1kg' ? '1kg' : weight === '500g' ? '500g' : weight === '100g' ? '100g' : '250g';
   const folder = product.category === 'Spices' ? 'products-spices' : product.category === 'Seeds' ? 'products-seeds' : 'products-official';
   return asset(`${folder}/${key}-${imgWeight}.webp`);
 };
@@ -1499,7 +1511,7 @@ function App() {
       const saved = JSON.parse(window.localStorage.getItem('naavori-cart') ?? '[]') as CartLine[];
       if (!Array.isArray(saved)) return [];
       return saved
-        .filter((line) => line && line.weight !== '1kg')
+        .filter((line) => Boolean(line))
         .map((line) => {
           let img = line.image || '';
           if (img.startsWith('./assets/')) {
@@ -1619,7 +1631,7 @@ function App() {
               packagingKey: p.packaging_key || p.slug || defaultItem?.packagingKey || 'mamra-almonds',
               tag: p.tag || defaultItem?.tag,
               imageUrl: p.image_url || undefined,
-              variants: p.variants?.filter((v: any) => v.weight_label !== '1kg').map((v: any) => ({
+              variants: p.variants?.map((v: any) => ({
                 id: v.id,
                 weight_label: v.weight_label,
                 price: Number(v.price)
