@@ -1,6 +1,11 @@
 import * as supportRepo from '../repositories/supportRepository.js';
 import * as userRepo from '../repositories/userRepository.js';
 import crypto from 'crypto';
+import { 
+  sendInquiryAdminAlert, 
+  sendInquiryCustomerAcknowledgment, 
+  sendTicketReplyCustomerEmail 
+} from '../utils/emailService.js';
 
 export const createTicket = async (req, res) => {
   try {
@@ -11,6 +16,9 @@ export const createTicket = async (req, res) => {
     }
 
     let userId = req.user?.id;
+    let customerEmail = email;
+    let customerName = name;
+
     if (!userId) {
       if (!email) {
         return res.status(400).json({ success: false, message: 'Please provide an email address' });
@@ -18,6 +26,7 @@ export const createTicket = async (req, res) => {
       const existing = await userRepo.findUserByEmail(email);
       if (existing) {
         userId = existing.id;
+        customerName = customerName || existing.first_name;
       } else {
         const id = crypto.randomUUID();
         const created = await userRepo.createUser({
@@ -27,7 +36,11 @@ export const createTicket = async (req, res) => {
           role: 'customer'
         });
         userId = created.id;
+        customerName = customerName || 'Guest Patron';
       }
+    } else {
+      customerEmail = customerEmail || req.user.email;
+      customerName = customerName || req.user.first_name || 'Valued Patron';
     }
 
     const ticketId = await supportRepo.createTicket({
@@ -36,6 +49,24 @@ export const createTicket = async (req, res) => {
       subject,
       message
     });
+
+    // 1. Notify store owner at info@naavori.in immediately
+    sendInquiryAdminAlert({
+      name: customerName,
+      email: customerEmail,
+      subject,
+      message,
+      order_id
+    }).catch(err => console.error('Store inquiry alert note:', err.message));
+
+    // 2. Send automated acknowledgment to customer
+    if (customerEmail) {
+      sendInquiryCustomerAcknowledgment({
+        name: customerName,
+        email: customerEmail,
+        subject
+      }).catch(err => console.error('Customer inquiry ack note:', err.message));
+    }
 
     res.status(201).json({
       success: true,
@@ -85,6 +116,18 @@ export const addReply = async (req, res) => {
       sender_id: req.user.id,
       message: message.trim()
     });
+
+    // If staff/admin replied, email the customer directly
+    try {
+      const ticket = await supportRepo.getTicketById(id);
+      if (ticket && ticket.user_email && (req.user.role === 'admin' || req.user.role === 'owner')) {
+        sendTicketReplyCustomerEmail(ticket, message.trim(), ticket.user_email).catch(e =>
+          console.error('Ticket reply customer email note:', e.message)
+        );
+      }
+    } catch (e) {
+      console.warn('Reply email lookup note:', e.message);
+    }
 
     res.status(201).json({
       success: true,

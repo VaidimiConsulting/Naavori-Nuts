@@ -5,7 +5,7 @@ import { Save, Store, Mail, ShieldCheck } from 'lucide-react';
 export default function AdminSettings() {
   const [settings, setSettings] = useState({
     store_name: 'NAAVORI NUTS',
-    support_email: 'concierge@naavorinuts.com',
+    support_email: 'info@naavori.in',
     support_phone: '+91 83188 29334 / +91 84481 70969',
     owner_phone: '+91 83188 29334, +91 84481 70969',
     currency: 'INR',

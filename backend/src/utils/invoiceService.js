@@ -66,7 +66,7 @@ export const generateOrderInvoicePDF = (order, res) => {
         .text('K63/112, Nakkash, Chowk', 40, y + 26)
         .text('Varanasi, Uttar Pradesh – 221001', 40, y + 38)
         .text('GSTIN: 09AAECN1234F1Z5', 40, y + 50)
-        .text('concierge@naavorinuts.com  |  Ph: +91 83188 29334, +91 84481 70969', 40, y + 62);
+        .text('info@naavori.in  |  Ph: +91 83188 29334, +91 84481 70969', 40, y + 62);
 
       // Invoice info block (Right)
       const orderDate = new Date(order.created_at || Date.now()).toLocaleDateString('en-IN', {
@@ -194,7 +194,7 @@ export const generateOrderInvoicePDF = (order, res) => {
         .text('Terms & Conditions:', 40, y + 15)
         .text('• All taxes inclusive under Composition / GST scheme.', 40, y + 27)
         .text('• Store in a cool, airtight and dry container away from sunlight.', 40, y + 39)
-        .text('• For customer support, reach out to concierge@naavorinuts.com', 40, y + 51);
+        .text('• For customer support, reach out to info@naavori.in', 40, y + 51);
 
       y += 110;
 

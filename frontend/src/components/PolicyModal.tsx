@@ -78,7 +78,7 @@ export function PolicyModal({ type, onClose }: PolicyModalProps) {
           </p>
           <h4>3. Contact & Concierge</h4>
           <p>
-            For any queries or assistance, contact store ownership directly at <strong>+91 83188 29334</strong> or <strong>concierge@naavorinuts.com</strong>.
+            For any queries or assistance, contact store ownership directly at <strong>+91 83188 29334</strong> or <strong>info@naavori.in</strong>.
           </p>
         </>
       ),

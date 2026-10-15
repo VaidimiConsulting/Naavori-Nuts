@@ -9,14 +9,15 @@ async function runSeed() {
   try {
     console.log('Starting seeder...');
 
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@naavorinuts.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'info@naavori.in';
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
     // Seed Admin User
     const hashedPw = await hashPassword(adminPassword);
-    await seedAdminUser(adminEmail, hashedPw);
+    await seedAdminUser('info@naavori.in', hashedPw);
+    await seedAdminUser('admin@naavorinuts.com', hashedPw);
     
-    console.log('Admin user seeding completed.');
+    console.log('Admin user seeding completed for info@naavori.in.');
 
     // Note: Product & Category seeding will be added next.
 

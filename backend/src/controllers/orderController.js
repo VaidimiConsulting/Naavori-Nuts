@@ -1,7 +1,6 @@
 import * as orderRepository from '../repositories/orderRepository.js';
 import pool from '../config/db.js';
-import crypto from 'crypto';
-import { sendOrderShippedEmail } from '../utils/emailService.js';
+import { sendOrderShippedEmail, sendOrderConfirmationEmail, sendNewOrderAdminAlert } from '../utils/emailService.js';
 
 // In Node v19+, crypto.randomUUID is available globally, but we import it just in case.
 if (!global.crypto) {
@@ -148,6 +147,21 @@ export const createOrder = async (req, res) => {
     }
 
     const orderId = await orderRepository.createOrder(orderData);
+
+    // Asynchronously dispatch emails (Customer confirmation + info@naavori.in order alert)
+    try {
+      const fullOrder = await orderRepository.getOrderById(orderId);
+      if (fullOrder) {
+        const customerEmail = orderData.guest_email || req.user.email;
+        if (customerEmail) {
+          sendOrderConfirmationEmail(fullOrder, customerEmail).catch(e => console.error('Customer order email error:', e.message));
+        }
+        sendNewOrderAdminAlert(fullOrder).catch(e => console.error('Store order alert error:', e.message));
+      }
+    } catch (emailErr) {
+      console.warn('Order email dispatch note:', emailErr.message);
+    }
+
     res.status(201).json({ success: true, message: 'Order created successfully', data: { orderId } });
   } catch (error) {
     console.error('Error creating order:', error);
