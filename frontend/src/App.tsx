@@ -8,7 +8,6 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Gift,
   Heart,
   Home,
   Leaf,
@@ -93,25 +92,6 @@ type BuilderOption = {
   note: string;
 };
 
-type GiftHamper = {
-  id: string;
-  name: string;
-  kicker: string;
-  tag: string;
-  occasion?: string | string[];
-  price: number;
-  ingredientsPrice?: number;
-  boxPrice?: number;
-  description: string;
-  pouches: {
-    name: string;
-    weight: string;
-    image: string;
-    position: 'left' | 'center' | 'right';
-  }[];
-  origin: string;
-};
-
 const asset = (name: string) => {
   if (!name) return '/assets/products-official/mamra-almonds-250g.webp';
   if (name.startsWith('http') || name.startsWith('data:')) return name;
@@ -178,128 +158,6 @@ const weights: { label: Weight; multiplier: number }[] = [
   { label: '100g', multiplier: 0.10 },
   { label: '250g', multiplier: 0.25 },
   { label: '500g', multiplier: 0.50 },
-];
-
-const giftHampers: GiftHamper[] = [
-  {
-    id: 'gift-shubh-aarambh',
-    name: 'The Shubh Aarambh Trio Nut Box',
-    kicker: '01 · Festive & Housewarming Edition',
-    tag: 'Bestseller Box · ₹400',
-    occasion: ['festive', 'affordable'],
-    price: 400,
-    ingredientsPrice: 350,
-    boxPrice: 50,
-    description: 'An aesthetic handcrafted rigid presentation hamper in signature NAAVORI royal plum & antique gold foil. Features premium Mamra Almonds (100g = ₹160), Jumbo Cashews (100g = ₹130), and sweet Golden Raisins (100g = ₹60) with celebratory satin ribbon. Includes ₹50 luxury rigid gift box packaging.',
-    origin: 'Kashmir, Goa & Maharashtra',
-    pouches: [
-      { name: 'Jumbo Cashews', weight: '100g', image: 'products-official/jumbo-cashews-100g.webp', position: 'left' },
-      { name: 'Mamra Almonds', weight: '100g', image: 'products-official/mamra-almonds-100g.webp', position: 'center' },
-      { name: 'Golden Raisins', weight: '100g', image: 'products-official/raisins-100g.webp', position: 'right' },
-    ],
-  },
-  {
-    id: 'gift-utsav-celebration',
-    name: 'The Classic Four Nuts Hamper Box',
-    kicker: '02 · Everyday Celebration Edition',
-    tag: 'Celebration Box · Under ₹1200',
-    occasion: ['festive', 'affordable', 'birthday'],
-    price: 629,
-    ingredientsPrice: 579,
-    boxPrice: 50,
-    description: 'A delightful 4-nut celebration gift box. Premium Pistachios (100g = ₹229), royal Mamra Almonds (100g = ₹160), Jumbo Cashews (100g = ₹130), and sun-dried Raisins (100g = ₹60) in signature stand-up pouches within our handcrafted plum & gold gift box. Includes ₹50 luxury rigid gift box packaging.',
-    origin: 'Kashmir, Goa & Bihar',
-    pouches: [
-      { name: 'Jumbo Cashews', weight: '100g', image: 'products-official/jumbo-cashews-100g.webp', position: 'left' },
-      { name: 'Mamra Almonds', weight: '100g', image: 'products-official/mamra-almonds-100g.webp', position: 'center' },
-      { name: 'Pistachios', weight: '100g', image: 'products-official/pistachios-100g.webp', position: 'right' },
-    ],
-  },
-  {
-    id: 'gift-corporate',
-    name: 'The Executive Corporate Nut Treasury',
-    kicker: '03 · Corporate & Executive Edition',
-    tag: 'Corporate Gifting · ₹1,347',
-    occasion: ['corporate'],
-    price: 1347,
-    ingredientsPrice: 1297,
-    boxPrice: 50,
-    description: 'Specially crafted for executive clientele, boardrooms, and esteemed corporate partners. Giant Jumbo Cashews (250g = ₹326), Mamra Almonds (250g = ₹399), and sweet Pistachios (250g = ₹572) in airtight pouches within our embossed corporate presentation gift box. Includes ₹50 luxury rigid gift box packaging.',
-    origin: 'Goa, Kashmir & Bihar',
-    pouches: [
-      { name: 'Jumbo Cashews', weight: '250g', image: 'products-official/jumbo-cashews-250g.webp', position: 'left' },
-      { name: 'Mamra Almonds', weight: '250g', image: 'products-official/mamra-almonds-250g.webp', position: 'center' },
-      { name: 'Pistachios', weight: '250g', image: 'products-official/pistachios-250g.webp', position: 'right' },
-    ],
-  },
-  {
-    id: 'gift-wedding',
-    name: 'The Royal Shahi Wedding Nut Hamper',
-    kicker: '04 · Shahi Vivah & Ceremonial Edition',
-    tag: 'Wedding Gifting · ₹1,797',
-    occasion: ['wedding'],
-    price: 1797,
-    ingredientsPrice: 1747,
-    boxPrice: 50,
-    description: 'Traditional auspicious wedding curation for matrimonial ceremonies, royal receptions, and family celebrations. 100% pure gourmet nuts: Mamra Almonds (250g = ₹399), Jumbo Cashews (250g = ₹326), Kashmiri Snow Walnuts (250g = ₹450), and vibrant Pistachios (250g = ₹572) in a bespoke gold-foiled rigid chest. Includes ₹50 luxury rigid gift box packaging.',
-    origin: 'Kashmir Valley, Goa & Bihar',
-    pouches: [
-      { name: 'Jumbo Cashews', weight: '250g', image: 'products-official/jumbo-cashews-250g.webp', position: 'left' },
-      { name: 'Mamra Almonds', weight: '250g', image: 'products-official/mamra-almonds-250g.webp', position: 'center' },
-      { name: 'Snow Walnuts', weight: '250g', image: 'products-official/snow-walnuts-250g.webp', position: 'right' },
-    ],
-  },
-  {
-    id: 'gift-birthday',
-    name: 'The Celebration Birthday Nut Box',
-    kicker: '05 · Birthday & Joyful Moments Edition',
-    tag: 'Birthday Special · ₹1,265',
-    occasion: ['birthday'],
-    price: 1265,
-    ingredientsPrice: 1215,
-    boxPrice: 50,
-    description: 'A cheerful, nutritious birthday surprise gift box. Bihar Fox Nuts / Makhana (250g = ₹340), crunchy royal Mamra Almonds (250g = ₹399), golden Jumbo Cashews (250g = ₹326), and sweet sun-dried Raisins (250g = ₹150) in celebratory pouches inside a luxury gift box. Includes ₹50 luxury rigid gift box packaging.',
-    origin: 'Bihar, Kashmir, Goa & Maharashtra',
-    pouches: [
-      { name: 'Fox Nuts (Makhana)', weight: '250g', image: 'products-official/fox-nuts-makhana-250g.webp', position: 'left' },
-      { name: 'Mamra Almonds', weight: '250g', image: 'products-official/mamra-almonds-250g.webp', position: 'center' },
-      { name: 'Jumbo Cashews', weight: '250g', image: 'products-official/jumbo-cashews-250g.webp', position: 'right' },
-    ],
-  },
-  {
-    id: 'gift-vitality-prana',
-    name: 'The Wellness Nut & Makhana Treasury',
-    kicker: '06 · Holistic Health & Prana Edition',
-    tag: 'Wellness Nut Edition · ₹1,239',
-    occasion: ['wellness'],
-    price: 1239,
-    ingredientsPrice: 1189,
-    boxPrice: 50,
-    description: 'Pure, nutrient-dense natural nourishment. Light airy Bihar Makhana (250g = ₹340), dense high-valley Kashmiri Mamra Almonds (250g = ₹399), and brain-nourishing Snow Walnuts (250g = ₹450) sealed for freshness in our signature wellness gift box. Includes ₹50 luxury rigid gift box packaging.',
-    origin: 'Bihar & Kashmir Valley',
-    pouches: [
-      { name: 'Fox Nuts (Makhana)', weight: '250g', image: 'products-official/fox-nuts-makhana-250g.webp', position: 'left' },
-      { name: 'Mamra Almonds', weight: '250g', image: 'products-official/mamra-almonds-250g.webp', position: 'center' },
-      { name: 'Snow Walnuts', weight: '250g', image: 'products-official/snow-walnuts-250g.webp', position: 'right' },
-    ],
-  },
-  {
-    id: 'gift-grand-panchratna',
-    name: 'The Grand Panch-Ratna 5-Nuts Royal Chest',
-    kicker: '07 · Royal 5-Nuts Grand Edition',
-    tag: 'Grand Luxury · 5 Royal Nuts · ₹2,137',
-    occasion: ['wedding', 'corporate'],
-    price: 2137,
-    ingredientsPrice: 2087,
-    boxPrice: 50,
-    description: 'The ultimate 5-nuts royal gift presentation. An extravagant assortment of Mamra Almonds (250g = ₹399), Jumbo Cashews (250g = ₹326), Pistachios (250g = ₹572), Snow Walnuts (250g = ₹450), and Fox Nuts Makhana (250g = ₹340) in an opulent keepsake presentation box. Includes ₹50 luxury rigid gift box packaging.',
-    origin: 'Kashmir, Goa & Bihar',
-    pouches: [
-      { name: 'Mamra Almonds', weight: '250g', image: 'products-official/mamra-almonds-250g.webp', position: 'left' },
-      { name: 'Pistachios', weight: '250g', image: 'products-official/pistachios-250g.webp', position: 'center' },
-      { name: 'Jumbo Cashews', weight: '250g', image: 'products-official/jumbo-cashews-250g.webp', position: 'right' },
-    ],
-  },
 ];
 
 const slugPackagingMap: Record<string, string> = {
@@ -380,25 +238,9 @@ const productImage = (product: Product, weight: Weight = '250g') => {
     return asset(product.imageUrl);
   }
 
-  // Check if it's a gift hamper
-  const cleanId = (product.id || '').toLowerCase();
-  const cleanKey = (product.packagingKey || '').toLowerCase();
-  const cleanName = (product.name || '').toLowerCase();
-  if (cleanId.startsWith('gift-') || cleanKey.startsWith('gift-') || cleanName.includes('hamper') || cleanName.includes('box') || cleanName.includes('chest')) {
-    const hamper = giftHampers.find(g => 
-      g.id === product.id || 
-      g.id === product.packagingKey || 
-      cleanName.includes(g.name.toLowerCase()) || 
-      g.name.toLowerCase().includes(cleanName)
-    );
-    if (hamper && hamper.pouches?.[0]?.image) {
-      return asset(hamper.pouches[0].image);
-    }
-    return asset('products-official/mamra-almonds-250g.webp');
-  }
-
   const rawKey = (product.packagingKey || product.id || 'mamra-almonds').toLowerCase().replace(/\s+/g, '-');
   const key = slugPackagingMap[rawKey] || rawKey;
+  const cleanName = (product.name || '').toLowerCase();
 
   if (key === 'kashmir-saffron' || rawKey.includes('saffron') || cleanName.includes('saffron') || cleanName.includes('केसर')) {
     const effectiveWeight = (!weight || weight === '250g') ? '1 gm' : weight;
@@ -463,7 +305,7 @@ const builderData: Record<BuilderKind, { label: string; title: string; copy: str
     ],
   },
   'spice-blend': {
-    label: 'Spice blend', title: 'Build your own spice blend.', copy: 'Layer whole spices into a custom aromatic signature for tables, gifting and slow cooking.', kicker: '02 · The custom spice edit', image: 'products-spices/tellicherry-black-pepper-250g.webp',
+    label: 'Spice blend', title: 'Build your own spice blend.', copy: 'Layer whole spices into a custom aromatic signature for tables, everyday dining and slow cooking.', kicker: '02 · The custom spice edit', image: 'products-spices/tellicherry-black-pepper-250g.webp',
     options: [
       { id: 'pepper', productId: 'tellicherry-black-pepper', label: 'Black Pepper', note: 'Malabar · bold' }, { id: 'cardamom', productId: 'idukki-green-cardamom', label: 'Green Cardamom', note: 'Kerala · floral' }, { id: 'cloves', productId: 'zanzibar-cloves', label: 'Whole Cloves', note: 'Zanzibar · warm' }, { id: 'cinnamon', productId: 'ceylon-cinnamon', label: 'Ceylon Cinnamon', note: 'Sri Lanka · light' }, { id: 'nutmeg', productId: 'malabar-nutmeg', label: 'Malabar Nutmeg', note: 'Kerala · resinous' }, { id: 'star-anise', productId: 'royal-garam-masala', label: 'Star Anise Blend', note: 'North India · layered' }, { id: 'cumin', productId: 'golden-cumin', label: 'Golden Cumin', note: 'Gujarat · toasted' },
     ],
@@ -537,21 +379,16 @@ function ProductDetailPage({ product, liked, toggleWishlist, addToCart, navigate
     setGallery(0);
   }, [product.id, isSaffron]);
 
-  const isHamper = cleanId.startsWith('gift-') || cleanKey.startsWith('gift-') || cleanName.includes('hamper') || cleanName.includes('box') || cleanName.includes('chest');
-  const hamper = isHamper ? giftHampers.find(g => g.id === product.id || g.id === product.packagingKey || cleanName.includes(g.name.toLowerCase()) || g.name.toLowerCase().includes(cleanName)) : null;
-
   const selectedWeight = weights.find((item) => item.label === weight) ?? weights[1];
   
   const variantPrice = product.variants?.find(v => v.weight_label === weight)?.price;
   const saffronGrams = isSaffron ? (parseInt(weight.replace(/[^0-9]/g, '')) || 1) : 1;
-  const basePrice = hamper ? hamper.price : (variantPrice ? variantPrice : (isSaffron ? saffronGrams * 175 : Math.round(numericPrice(product.price) * (selectedWeight.multiplier / 0.25))));
+  const basePrice = variantPrice ? variantPrice : (isSaffron ? saffronGrams * 175 : Math.round(numericPrice(product.price) * (selectedWeight.multiplier / 0.25)));
   const total = basePrice * quantity;
   
-  const galleryImages = hamper
-    ? hamper.pouches.map((p) => asset(p.image))
-    : isSaffron
-      ? saffronOptions.map(({ label }) => productImage(product, label))
-      : weights.map(({ label }) => productImage(product, label));
+  const galleryImages = isSaffron
+    ? saffronOptions.map(({ label }) => productImage(product, label))
+    : weights.map(({ label }) => productImage(product, label));
 
   const shareProduct = () => { void navigator.clipboard?.writeText(window.location.href); };
   const benefits = product.category === 'Nuts' ? ['Rich in protein', 'High in vitamin E', 'Heart healthy', 'Natural energy source'] : product.category === 'Seeds' ? ['Mineral rich', 'High fibre', 'Plant-powered goodness', 'Daily nourishment'] : ['Naturally aromatic', 'Antioxidant rich', 'Warming character', 'Kitchen essential'];
@@ -581,12 +418,10 @@ function ProductDetailPage({ product, liked, toggleWishlist, addToCart, navigate
                 className={gallery === index ? 'is-active' : ''}
                 onClick={() => {
                   setGallery(index);
-                  if (!hamper) {
-                    if (isSaffron && saffronOptions[index]) {
-                      setWeight(saffronOptions[index].label);
-                    } else if (weights[index]) {
-                      setWeight(weights[index].label);
-                    }
+                  if (isSaffron && saffronOptions[index]) {
+                    setWeight(saffronOptions[index].label);
+                  } else if (weights[index]) {
+                    setWeight(weights[index].label);
                   }
                 }}
               >
@@ -598,7 +433,7 @@ function ProductDetailPage({ product, liked, toggleWishlist, addToCart, navigate
                     e.currentTarget.src = defaultFallbackPouch(product.category);
                   }}
                 />
-                <small>{hamper ? hamper.pouches[index]?.weight || `Pouch ${index + 1}` : (isSaffron ? saffronOptions[index]?.label : weights[index]?.label)}</small>
+                <small>{isSaffron ? saffronOptions[index]?.label : weights[index]?.label}</small>
               </button>
             ))}
           </div>
@@ -622,24 +457,8 @@ function ProductDetailPage({ product, liked, toggleWishlist, addToCart, navigate
             <span className="product-detail__badge"><BadgeCheck size={14} /> Premium</span>
           </div>
           <p className="product-detail__lede">
-            {hamper ? hamper.description : `${product.description} Thoughtfully selected and freshly sealed for a more generous everyday.`}
+            {product.description} Thoughtfully selected and freshly sealed for a more generous everyday.
           </p>
-
-          {hamper && (
-            <div style={{ margin: '14px 0 20px', padding: '14px 16px', background: 'rgba(183,141,82,0.08)', borderRadius: '10px', border: '1px solid rgba(183,141,82,0.22)' }}>
-              <div style={{ color: '#8c5825', fontWeight: 600, fontSize: '13px', marginBottom: '6px' }}>✦ Hamper Includes (Strictly Nuts Only):</div>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {hamper.pouches.map((p) => (
-                  <span key={p.name} style={{ background: '#fff', border: '1px solid #d9bd91', padding: '4px 10px', borderRadius: '20px', fontSize: '12px', color: '#38243F', fontWeight: 500 }}>
-                    {p.name} ({p.weight})
-                  </span>
-                ))}
-                <span style={{ background: '#38243F', color: '#fff', padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 600 }}>
-                  + ₹50 Rigid Gift Box Packaging
-                </span>
-              </div>
-            </div>
-          )}
 
           <p className="product-detail__long">
             A considered pantry staple from the NAAVORI collection, gathered for texture, provenance and a clean, expressive finish. Naturally grown, quality checked and packed close to source.
@@ -648,14 +467,8 @@ function ProductDetailPage({ product, liked, toggleWishlist, addToCart, navigate
           <div className="product-purchase">
             <div className="purchase-row">
               <div>
-                <span className="purchase-label">{hamper ? 'Presentation Format' : 'Choose your weight'}</span>
-                {hamper ? (
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button className="is-active" style={{ cursor: 'default', padding: '8px 16px', borderRadius: '20px', border: '1px solid #38243F', background: '#38243F', color: '#fff', fontSize: '12.5px', fontWeight: 600 }}>
-                      🎁 Luxury Rigid Hamper Box ({hamper.pouches.length} Pouches Set)
-                    </button>
-                  </div>
-                ) : isSaffron ? (
+                <span className="purchase-label">Choose your weight</span>
+                {isSaffron ? (
                   <div className="weight-options">
                     {saffronOptions.map((item, index) => (
                       <button
@@ -798,268 +611,11 @@ function BuilderExperience({ kind, addCustomToCart }: { kind: BuilderKind; addCu
   const [selected, setSelected] = useState<string[]>(data.options.slice(0, kind === 'spice-blend' ? 2 : 3).map((option) => option.id));
   const [grams, setGrams] = useState(250);
   const price = Math.max(0, Math.round(selected.reduce((sum, id) => { const option = data.options.find((item) => item.id === id); const product = option ? findProduct(option.productId) : undefined; return sum + (product ? numericPrice(product.price) : 0); }, 0) * (grams / 250) / Math.max(1, selected.length) * 1.2));
-  return <div className="builder-experience"><div className="builder-experience__preview"><BuilderVisualizer kind={kind} selected={selected} options={data.options} /><div className="builder-experience__proof"><span><Check size={13} /> Single origin</span><span><Check size={13} /> No preservatives</span><span><Check size={13} /> Gift ready</span></div></div><div className="builder-experience__controls"><p className="eyebrow">Choose your ingredients</p><div className="builder-option-grid">{data.options.map((option) => <button key={option.id} className={selected.includes(option.id) ? 'is-selected' : ''} onClick={() => setSelected((current) => current.includes(option.id) ? current.filter((item) => item !== option.id) : [...current, option.id])}><span className="builder-option__check">{selected.includes(option.id) ? <Check size={13} /> : <Plus size={13} />}</span><span><strong>{option.label}</strong><small>{option.note}</small></span></button>)}</div><div className="builder-size-row"><span>Box size</span><div>{[150, 250, 450].map((value) => <button key={value} className={grams === value ? 'is-active' : ''} onClick={() => setGrams(value)}>{value}g</button>)}</div></div><div className="builder-total"><span>Estimated edit</span><strong>{money(price)}</strong></div><button className="button button--dark button--full" disabled={!selected.length} onClick={() => addCustomToCart(kind, selected, grams, price)}>Add this custom edit <ShoppingBag size={15} /></button><p className="builder-note">Your final blend is weighed, sealed and finished by hand.</p></div></div>;
+  return <div className="builder-experience"><div className="builder-experience__preview"><BuilderVisualizer kind={kind} selected={selected} options={data.options} /><div className="builder-experience__proof"><span><Check size={13} /> Single origin</span><span><Check size={13} /> No preservatives</span><span><Check size={13} /> Fresh sealed</span></div></div><div className="builder-experience__controls"><p className="eyebrow">Choose your ingredients</p><div className="builder-option-grid">{data.options.map((option) => <button key={option.id} className={selected.includes(option.id) ? 'is-selected' : ''} onClick={() => setSelected((current) => current.includes(option.id) ? current.filter((item) => item !== option.id) : [...current, option.id])}><span className="builder-option__check">{selected.includes(option.id) ? <Check size={13} /> : <Plus size={13} />}</span><span><strong>{option.label}</strong><small>{option.note}</small></span></button>)}</div><div className="builder-size-row"><span>Box size</span><div>{[150, 250, 450].map((value) => <button key={value} className={grams === value ? 'is-active' : ''} onClick={() => setGrams(value)}>{value}g</button>)}</div></div><div className="builder-total"><span>Estimated edit</span><strong>{money(price)}</strong></div><button className="button button--dark button--full" disabled={!selected.length} onClick={() => addCustomToCart(kind, selected, grams, price)}>Add this custom edit <ShoppingBag size={15} /></button><p className="builder-note">Your final blend is weighed, sealed and finished by hand.</p></div></div>;
 }
 
 function BuilderShowcase({ navigate, addCustomToCart }: { navigate: (path: string) => void; addCustomToCart: (kind: BuilderKind, ids: string[], grams: number, price: number) => void }) {
-  return <section className="builders section-pad" id="builders"><div className="section-heading section-heading--split" data-reveal><div><p className="eyebrow">04 · The custom edit</p><h2>Build a ritual<br /><em>of your own.</em></h2></div><p className="section-intro">Three premium ways to compose something personal — with real NAAVORI ingredients, a gift-ready finish and a little more intention.</p></div><div className="builder-tiles">{(Object.keys(builderData) as BuilderKind[]).map((kind, index) => { const data = builderData[kind]; return <button key={kind} className={`builder-tile builder-tile--${kind}`} onClick={() => navigate(`/build/${kind}`)} data-reveal><span className="builder-tile__number">0{index + 1}</span><img src={asset(data.image)} alt={`${data.label} NAAVORI packaging`} loading="lazy" /><span className="builder-tile__copy"><p className="eyebrow">{data.kicker}</p><h3>{data.title}</h3><em>{data.copy}</em><strong>Start composing <ArrowUpRight size={14} /></strong></span></button>; })}</div><div className="builder-inline"><BuilderExperience kind="nut-mix" addCustomToCart={addCustomToCart} /></div></section>;
-}
-
-function GiftBoxCard({ hamper, onAddToCart, onBuyNow, navigate }: { hamper: GiftHamper; onAddToCart: (hamper: GiftHamper) => void; onBuyNow: (hamper: GiftHamper) => void; navigate: (path: string) => void }) {
-  return (
-    <article className="gift-box-card is-visible" style={{ opacity: 1, transform: 'none' }}>
-      <div className="gift-box-card__stage">
-        <span className="gift-box-card__tag">{hamper.tag}</span>
-        <div className="gift-box-card__halo" />
-
-        {/* Aesthetic Rigid Hamper Box in website's Royal Plum & Antique Gold */}
-        <div className="gift-hamper-tray" aria-hidden="true">
-          <div className="gift-hamper-tray__lid-back" />
-          <div className="gift-hamper-tray__silk-bed" />
-          <div className="gift-hamper-tray__front">
-            <div className="gift-hamper-tray__ribbon" />
-            <div className="gift-hamper-tray__seal">
-              <span className="gift-hamper-tray__seal-star">✦</span>
-              <strong>NAAVORI</strong>
-              <small>HERITAGE BOX</small>
-            </div>
-            <span className="gift-hamper-tray__gold-trim" />
-          </div>
-        </div>
-
-        <div className="gift-box-card__pouches">
-          {hamper.pouches.map((pouch) => (
-            <img
-              key={pouch.name}
-              src={asset(pouch.image)}
-              alt={`${pouch.name} packet`}
-              className={`gift-box-card__pouch gift-box-card__pouch--${pouch.position}`}
-              loading="lazy"
-            />
-          ))}
-        </div>
-      </div>
-      <div className="gift-box-card__content">
-        <p className="gift-box-card__kicker">{hamper.kicker}</p>
-        <h3 className="gift-box-card__title">{hamper.name}</h3>
-        <div className="gift-box-card__items">
-          {hamper.pouches.map((pouch) => (
-            <span key={pouch.name} className="gift-pouch-badge">
-              ✦ {pouch.name} ({pouch.weight})
-            </span>
-          ))}
-        </div>
-        <p className="gift-box-card__desc">{hamper.description}</p>
-        <div className="gift-box-card__footer">
-          <div className="gift-box-card__price-box">
-            <strong style={{ fontSize: '20px' }}>{money(hamper.price)}</strong>
-            <small style={{ color: '#8c5825', fontWeight: 600, display: 'block', marginTop: '2px' }}>
-              🎁 Includes ₹50 Luxury Gift Box
-            </small>
-            {hamper.ingredientsPrice && (
-              <span style={{ fontSize: '11px', color: '#777', display: 'block', marginTop: '1px' }}>
-                (Nuts: ₹{hamper.ingredientsPrice} + Box: ₹50)
-              </span>
-            )}
-          </div>
-          <div className="gift-box-card__cta-group">
-            <button className="text-button" onClick={() => onAddToCart(hamper)}>
-              Add to bag <ArrowUpRight size={13} />
-            </button>
-            <button className="text-button text-button--secondary" onClick={() => onBuyNow(hamper)}>
-              Buy now <ArrowUpRight size={13} />
-            </button>
-          </div>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function GiftingSection({ navigate, onAddToCart, onBuyNow }: { navigate: (path: string) => void; onAddToCart: (hamper: GiftHamper) => void; onBuyNow: (hamper: GiftHamper) => void }) {
-  const [activeOccasion, setActiveOccasion] = useState<string>('all');
-  const filteredHampers = useMemo(() => {
-    if (activeOccasion === 'all') return giftHampers;
-    return giftHampers.filter((h) => {
-      if (Array.isArray(h.occasion)) return h.occasion.includes(activeOccasion);
-      return h.occasion === activeOccasion;
-    });
-  }, [activeOccasion]);
-
-  return (
-    <section className="gifting-section section-pad" id="gifting">
-      <div className="section-heading section-heading--split" data-reveal>
-        <div>
-          <p className="eyebrow">03 · Considered Gifting & Hampers</p>
-          <h2>Goodness, wrapped<br /><em>with intention.</em></h2>
-        </div>
-        <p className="section-intro">
-          Curated gift collections featuring our signature luxury stand-up pouches. Pure provenance, authentic taste, and artisanal gift box presentation.
-        </p>
-      </div>
-
-      {/* Occasion Filter Tabs */}
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '32px' }} data-reveal>
-        {[
-          { id: 'all', label: 'All Hampers' },
-          { id: 'festive', label: '✨ Affordable Hampers (Under ₹1200)' },
-          { id: 'corporate', label: '🏢 Corporate Gifting' },
-          { id: 'wedding', label: '💍 Wedding Gifting' },
-          { id: 'birthday', label: '🎂 Birthday Gifting' },
-          { id: 'wellness', label: '🌿 Wellness Editions' },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveOccasion(tab.id)}
-            style={{
-              padding: '8px 18px',
-              borderRadius: '24px',
-              border: activeOccasion === tab.id ? '1px solid #38243F' : '1px solid #EAEAEA',
-              backgroundColor: activeOccasion === tab.id ? '#38243F' : '#fff',
-              color: activeOccasion === tab.id ? '#fff' : '#555',
-              fontFamily: 'DM Sans',
-              fontSize: '13px',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="gifting-grid">
-        {filteredHampers.map((hamper) => (
-          <GiftBoxCard
-            key={hamper.id}
-            hamper={hamper}
-            onAddToCart={onAddToCart}
-            onBuyNow={onBuyNow}
-            navigate={navigate}
-          />
-        ))}
-      </div>
-
-      <div className="gifting-bulk-banner" data-reveal>
-        <div>
-          <span className="eyebrow" style={{ color: 'var(--gold-light)' }}>Bespoke, Wedding & Corporate Orders</span>
-          <h3>Looking for bespoke wedding<br /><em>or corporate gifting?</em></h3>
-          <p>
-            We curate bespoke packaging with personalized gold foil seals, custom calligraphy greeting notes, and curated mixes tailored to your occasion.
-          </p>
-        </div>
-        <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-          <button className="button button--gold" onClick={() => navigate('/contact')}>
-            Enquire bulk gifting <ArrowUpRight size={15} />
-          </button>
-          <button className="button button--quiet" onClick={() => navigate('/build/nut-mix')}>
-            Build custom edit <ArrowUpRight size={15} />
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function GiftingPage({ navigate, onAddToCart, onBuyNow, setToast }: { navigate: (path: string) => void; onAddToCart: (hamper: GiftHamper) => void; onBuyNow: (hamper: GiftHamper) => void; setToast: (msg: string) => void }) {
-  const [activeOccasion, setActiveOccasion] = useState<string>('all');
-  const filteredHampers = useMemo(() => {
-    if (activeOccasion === 'all') return giftHampers;
-    return giftHampers.filter((h) => {
-      if (Array.isArray(h.occasion)) return h.occasion.includes(activeOccasion);
-      return h.occasion === activeOccasion;
-    });
-  }, [activeOccasion]);
-
-  return (
-    <>
-      <section className="page-hero page-hero--shop" style={{ backgroundImage: `linear-gradient(rgba(56,36,63,0.7), rgba(56,36,63,0.7)), url(${asset('compositions/brand-reference.webp')})`, backgroundSize: 'cover', backgroundPosition: 'center', color: '#fff' }}>
-        <p className="eyebrow" style={{ color: 'var(--gold-light)' }}>The Gifting Archive · Considered Elegance</p>
-        <h1 style={{ color: '#fff' }}>A quieter kind<br /><em>of gifting.</em></h1>
-        <p style={{ color: 'rgba(255,255,255,0.85)' }}>
-          No loud artificial boxes. Every NAAVORI hamper brings together 100% premium gourmet nuts in our signature stand-up pouches, packed inside a handcrafted luxury rigid presentation box.
-        </p>
-      </section>
-
-      <main className="section-pad">
-        <div className="section-heading section-heading--split" style={{ marginBottom: '30px' }}>
-          <div>
-            <p className="eyebrow">Signature Curations</p>
-            <h2>Selected for<br /><em>special moments.</em></h2>
-          </div>
-          <button className="line-button" onClick={() => navigate('/shop')}>
-            <ArrowLeft size={14} /> Back to all ingredients
-          </button>
-        </div>
-
-        {/* Occasion Filter Tabs */}
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '36px' }}>
-          {[
-            { id: 'all', label: 'All Hampers' },
-            { id: 'festive', label: '✨ Affordable Hampers (Under ₹1200)' },
-            { id: 'corporate', label: '🏢 Corporate Gifting' },
-            { id: 'wedding', label: '💍 Wedding Gifting' },
-            { id: 'birthday', label: '🎂 Birthday Gifting' },
-            { id: 'wellness', label: '🌿 Wellness Editions' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveOccasion(tab.id)}
-              style={{
-                padding: '9px 20px',
-                borderRadius: '24px',
-                border: activeOccasion === tab.id ? '1px solid #38243F' : '1px solid #EAEAEA',
-                backgroundColor: activeOccasion === tab.id ? '#38243F' : '#fff',
-                color: activeOccasion === tab.id ? '#fff' : '#555',
-                fontFamily: 'DM Sans',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="gifting-grid">
-          {filteredHampers.length === 0 ? (
-            <div style={{ padding: '60px 20px', textAlign: 'center', width: '100%', gridColumn: '1 / -1' }}>
-              <p style={{ color: '#888', fontSize: '15px' }}>No hampers currently in this category.</p>
-              <button className="button button--dark" style={{ marginTop: '12px' }} onClick={() => setActiveOccasion('all')}>
-                Browse All Hampers
-              </button>
-            </div>
-          ) : (
-            filteredHampers.map((hamper) => (
-              <GiftBoxCard
-                key={hamper.id}
-                hamper={hamper}
-                onAddToCart={onAddToCart}
-                onBuyNow={onBuyNow}
-                navigate={navigate}
-              />
-            ))
-          )}
-        </div>
-
-        <div className="gifting-bulk-banner" style={{ marginTop: '70px' }}>
-          <div>
-            <span className="eyebrow" style={{ color: 'var(--gold-light)' }}>Concierge Service</span>
-            <h3>Bespoke Corporate & Wedding Curation</h3>
-            <p>
-              Direct sourcing, custom branding, and door-to-door pan-India delivery for 25 to 5,000+ units.
-            </p>
-          </div>
-          <button className="button button--gold" onClick={() => navigate('/contact')}>
-            Connect with Concierge <ArrowUpRight size={15} />
-          </button>
-        </div>
-      </main>
-    </>
-  );
+  return <section className="builders section-pad" id="builders"><div className="section-heading section-heading--split" data-reveal><div><p className="eyebrow">04 · The custom edit</p><h2>Build a ritual<br /><em>of your own.</em></h2></div><p className="section-intro">Three premium ways to compose something personal — with real NAAVORI ingredients, an artisanal finish and a little more intention.</p></div><div className="builder-tiles">{(Object.keys(builderData) as BuilderKind[]).map((kind, index) => { const data = builderData[kind]; return <button key={kind} className={`builder-tile builder-tile--${kind}`} onClick={() => navigate(`/build/${kind}`)} data-reveal><span className="builder-tile__number">0{index + 1}</span><img src={asset(data.image)} alt={`${data.label} NAAVORI packaging`} loading="lazy" /><span className="builder-tile__copy"><p className="eyebrow">{data.kicker}</p><h3>{data.title}</h3><em>{data.copy}</em><strong>Start composing <ArrowUpRight size={14} /></strong></span></button>; })}</div><div className="builder-inline"><BuilderExperience kind="nut-mix" addCustomToCart={addCustomToCart} /></div></section>;
 }
 
 function OriginMap({ activeOrigin, setActiveOrigin, setQuickView, navigate }: { activeOrigin: OriginKey; setActiveOrigin: (origin: OriginKey) => void; setQuickView: (product: Product) => void; navigate: (path: string) => void }) {
@@ -1077,7 +633,6 @@ function RouteChrome({ route, navigate, cartCount, wishlistCount, customer }: { 
         <button className={route === '/' ? 'is-active' : ''} onClick={() => navigate('/')}>Home</button>
         <button className={route === '/shop' ? 'is-active' : ''} onClick={() => navigate('/shop')}>Shop</button>
         <button className={route.startsWith('/build/') ? 'is-active' : ''} onClick={() => navigate('/build/nut-mix')}>Build</button>
-        <button className={route === '/gifting' ? 'is-active' : ''} onClick={() => navigate('/gifting')}>Gifting</button>
         <button onClick={() => navigate('/nuts')}>Collections</button>
         <button
           className={route === '/reviews' ? 'is-active' : ''}
@@ -1181,7 +736,7 @@ function ContactPage({ setToast }: { setToast: (msg: string) => void }) {
     }
   };
 
-  return <><section className="contact-hero page-hero"><div className="contact-hero__copy"><p className="eyebrow">A considered conversation</p><h1>Come say<br /><em>hello.</em></h1><p>For sourcing questions, gifting conversations or simply a note from the pantry, our door is open.</p></div><div className="contact-hero__visual"><img src={asset('products-official/dry-coconut-250g.webp')} alt="NAAVORI Premium Dry Coconut packaging" loading="eager" /><span>Freshly packed · Varanasi</span></div></section><section className="contact-strip section-pad"><div><p className="eyebrow">Visit the house</p><strong>K63/112, Nakkash<br />Bhoot Bhairav, Varanasi – 221001</strong></div><div><p className="eyebrow">Call the owner & concierge</p><div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}><a href="tel:+918318829334">+91 83188 29334 (Owner)</a><a href="tel:+918448170969">+91 84481 70969 (Direct)</a></div></div><div><p className="eyebrow">Write with care</p><a href="mailto:info@naavori.in">info@naavori.in</a></div></section><section className="simple-detail section-pad" style={{ maxWidth: 840, margin: '0 auto' }}><div className="simple-detail__mark"><Mail size={24} /></div><p className="eyebrow">Send a note to the house</p><h2>Let’s make something<br /><em>beautiful.</em></h2>{sent ? <div style={{ padding: '24px', background: 'rgba(56, 36, 63, 0.05)', borderRadius: '12px', marginTop: '20px' }}><h3>Thank you for writing to NAAVORI.</h3><p>Your message has been registered with our concierge team. We reply within one business day.</p></div> : <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '28px', textAlign: 'left' }}><label style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px' }}>Your name<input required name="name" placeholder="Full name" style={{ padding: '12px 14px', border: '1px solid var(--line, rgba(0,0,0,0.1))', borderRadius: '8px', background: '#fff', color: '#38243F', fontFamily: 'DM Sans', fontSize: '14px' }} /></label><label style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px' }}>Your email<input required name="email" type="email" placeholder="you@domain.com" style={{ padding: '12px 14px', border: '1px solid var(--line, rgba(0,0,0,0.1))', borderRadius: '8px', background: '#fff', color: '#38243F', fontFamily: 'DM Sans', fontSize: '14px' }} /></label><label style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px' }}>Message or inquiry<textarea required name="message" rows={4} placeholder="Tell us how we can help..." style={{ padding: '12px 14px', border: '1px solid var(--line, rgba(0,0,0,0.1))', borderRadius: '8px', background: '#fff', color: '#38243F', fontFamily: 'DM Sans', fontSize: '14px', resize: 'vertical' }} /></label><button disabled={submitting} type="submit" className="button button--dark" style={{ gridColumn: '1 / -1', justifySelf: 'start', marginTop: '8px' }}>{submitting ? 'Sending note...' : 'Send message to Concierge'} <ArrowUpRight size={15} /></button></form>}</section></>;
+  return <><section className="contact-hero page-hero"><div className="contact-hero__copy"><p className="eyebrow">A considered conversation</p><h1>Come say<br /><em>hello.</em></h1><p>For sourcing questions, order conversations or simply a note from the pantry, our door is open.</p></div><div className="contact-hero__visual"><img src={asset('products-official/dry-coconut-250g.webp')} alt="NAAVORI Premium Dry Coconut packaging" loading="eager" /><span>Freshly packed · Varanasi</span></div></section><section className="contact-strip section-pad"><div><p className="eyebrow">Visit the house</p><strong>K63/112, Nakkash<br />Bhoot Bhairav, Varanasi – 221001</strong></div><div><p className="eyebrow">Call the owner & concierge</p><div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}><a href="tel:+918318819334">+91 83188 19334 (Owner)</a><a href="tel:+918448170969">+91 84481 70969 (Direct)</a></div></div><div><p className="eyebrow">Write with care</p><a href="mailto:info@naavori.in">info@naavori.in</a></div></section><section className="simple-detail section-pad" style={{ maxWidth: 840, margin: '0 auto' }}><div className="simple-detail__mark"><Mail size={24} /></div><p className="eyebrow">Send a note to the house</p><h2>Let’s make something<br /><em>beautiful.</em></h2>{sent ? <div style={{ padding: '24px', background: 'rgba(56, 36, 63, 0.05)', borderRadius: '12px', marginTop: '20px' }}><h3>Thank you for writing to NAAVORI.</h3><p>Your message has been registered with our concierge team. We reply within one business day.</p></div> : <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '28px', textAlign: 'left' }}><label style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px' }}>Your name<input required name="name" placeholder="Full name" style={{ padding: '12px 14px', border: '1px solid var(--line, rgba(0,0,0,0.1))', borderRadius: '8px', background: '#fff', color: '#38243F', fontFamily: 'DM Sans', fontSize: '14px' }} /></label><label style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px' }}>Your email<input required name="email" type="email" placeholder="you@domain.com" style={{ padding: '12px 14px', border: '1px solid var(--line, rgba(0,0,0,0.1))', borderRadius: '8px', background: '#fff', color: '#38243F', fontFamily: 'DM Sans', fontSize: '14px' }} /></label><label style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px' }}>Message or inquiry<textarea required name="message" rows={4} placeholder="Tell us how we can help..." style={{ padding: '12px 14px', border: '1px solid var(--line, rgba(0,0,0,0.1))', borderRadius: '8px', background: '#fff', color: '#38243F', fontFamily: 'DM Sans', fontSize: '14px', resize: 'vertical' }} /></label><button disabled={submitting} type="submit" className="button button--dark" style={{ gridColumn: '1 / -1', justifySelf: 'start', marginTop: '8px' }}>{submitting ? 'Sending note...' : 'Send message to Concierge'} <ArrowUpRight size={15} /></button></form>}</section></>;
 }
 
 function SimplePage({ type, navigate }: { type: 'about' | 'our-story'; navigate: (path: string) => void }) {
@@ -1777,7 +1332,7 @@ function RouteFooter({ navigate, onPolicy }: { navigate: (path: string) => void;
         <span>K63/112, Nakkash · Varanasi</span>
         <a href="mailto:info@naavori.in">info@naavori.in</a>
         <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>
-          <a href="tel:+918318829334" style={{ color: 'inherit', textDecoration: 'none' }}>+91 83188 29334</a> · <a href="tel:+918448170969" style={{ color: 'inherit', textDecoration: 'none' }}>+91 84481 70969</a>
+          <a href="tel:+918318819334" style={{ color: 'inherit', textDecoration: 'none' }}>+91 83188 19334</a> · <a href="tel:+918448170969" style={{ color: 'inherit', textDecoration: 'none' }}>+91 84481 70969</a>
         </span>
       </div>
       <div className="route-footer__actions">
@@ -1894,7 +1449,7 @@ function ReviewModal({ onClose, setToast, catalogue, onReviewAdded }: { onClose:
                 onChange={(e) => setSelectedProductId(e.target.value)}
                 style={{ padding: '11px 14px', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '8px', background: '#fff', color: '#38243F', fontFamily: 'DM Sans', fontSize: '13.5px' }}
               >
-                <option value="">General Experience / Hamper</option>
+                <option value="">General Experience / Overall Order</option>
                 {catalogue.slice(0, 15).map((p) => (
                   <option key={p.id} value={p.dbId || p.id}>{p.name}</option>
                 ))}
@@ -1953,13 +1508,7 @@ function App() {
             img = '/' + img;
           }
           if (!img || img.includes('gift-') || img.endsWith('/assets/')) {
-            const cleanName = (line.name || '').toLowerCase();
-            const hamper = giftHampers.find((g) => cleanName.includes(g.name.toLowerCase()) || g.name.toLowerCase().includes(cleanName));
-            if (hamper && hamper.pouches?.[0]?.image) {
-              img = asset(hamper.pouches[0].image);
-            } else {
-              img = defaultFallbackPouch(line.category);
-            }
+            img = defaultFallbackPouch(line.category);
           }
           return { ...line, image: img };
         });
@@ -2202,33 +1751,6 @@ function App() {
     setToast(`${names || 'Your custom edit'} added to your bag`);
   };
 
-  const addGiftToCart = (hamper: GiftHamper) => {
-    const id = `gift-${hamper.id}`;
-    const firstPouch = hamper.pouches[0]?.image || 'products-official/mamra-almonds-250g.webp';
-    setCart((current) => {
-      const existing = current.find((line) => line.id === id);
-      return existing
-        ? current.map((line) => line.id === id ? { ...line, quantity: line.quantity + 1 } : line)
-        : [...current, {
-            id,
-            name: hamper.name,
-            category: 'Gifting Hamper',
-            origin: hamper.origin,
-            weight: `${hamper.pouches.length} Pouches Set`,
-            price: hamper.price,
-            quantity: 1,
-            image: asset(firstPouch),
-            custom: true,
-          }];
-    });
-    setToast(`${hamper.name} added to your shopping bag`);
-  };
-
-  const buyGiftNow = (hamper: GiftHamper) => {
-    addGiftToCart(hamper);
-    navigate('/checkout');
-  };
-
   const updateQuantity = (id: string, delta: number) => setCart((current) => current.map((line) => line.id === id ? { ...line, quantity: Math.max(1, line.quantity + delta) } : line));
   const removeLine = (id: string) => setCart((current) => current.filter((line) => line.id !== id));
   const clearCart = () => setCart([]);
@@ -2253,13 +1775,13 @@ function App() {
     target.style.setProperty('--cursor-y', `${(event.clientY - rect.top) / rect.height * 100}%`);
   };
 
-  const renderHome = () => <><div className="site-shell"><header className={`site-header ${scrolled ? 'site-header--scrolled' : ''}`}><button className="header-brand" onClick={() => goTo('top')} aria-label="Back to top"><LogoImage /></button><nav className={`main-nav ${menuOpen ? 'main-nav--open' : ''}`}><button onClick={() => navigate('/')}>Home</button><button onClick={() => navigate('/shop')}>Shop</button><button onClick={() => goTo('builders')}>Build</button><button onClick={() => goTo('gifting')}>Gifting</button><button onClick={() => goTo('origin')}>Origins</button><button onClick={() => goTo('reviews')}>Reviews</button><button onClick={() => navigate('/about')}>About</button><button onClick={() => navigate('/contact')}>Contact</button></nav><div className="header-actions"><button className={`icon-button search-button ${searchOpen ? 'search-button--open' : ''}`} onClick={() => setSearchOpen((value) => !value)} aria-label="Search">{searchOpen ? <><Search size={17} /><input autoFocus onClick={(event) => event.stopPropagation()} onKeyDown={(event) => { if (event.key === 'Enter' && event.currentTarget.value) navigate(`/shop?query=${encodeURIComponent(event.currentTarget.value)}`); }} placeholder="Search ingredients" /></> : <Search size={18} />}</button><button className="icon-button" onClick={() => navigate(customer ? '/account' : '/login')} aria-label={customer ? 'Account' : 'Sign in'} title={customer ? `Signed in as ${customer.name}` : 'Sign in / Register'} style={{ position: 'relative' }}><User size={18} />{customer && <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#52c41a', position: 'absolute', top: '5px', right: '5px', border: '1px solid #fff' }} />}</button><button className="icon-button" onClick={() => navigate('/wishlist')} aria-label="Wishlist"><Heart size={18} /></button><button className="icon-button cart-button" onClick={() => navigate('/cart')} aria-label="Shopping bag"><ShoppingBag size={18} /><span>{cartCount}</span></button><button className="menu-toggle" onClick={() => setMenuOpen((value) => !value)} aria-label="Toggle navigation">{menuOpen ? <X size={20} /> : <Menu size={20} />}</button></div></header><main id="top"><section className="hero" onMouseMove={handleHeroMove}><video className="hero__video" autoPlay muted loop playsInline preload="metadata" poster={asset('compositions/brand-reference.webp')}><source src={asset('hero-video.mp4')} type="video/mp4" /></video><div className="hero__veil" /><div className="hero__glow" /><div className="hero__particles" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div><div className="hero__content"><p className="eyebrow hero__eyebrow"><span className="eyebrow-dot" /> From India, with intention</p><h1>Pure origins.<br /><em>Real goodness.</em></h1><p className="hero__copy">A considered collection of nuts, seeds and spices — selected from India&apos;s richest regions, crafted for everyday ritual.</p><div className="hero__actions"><button className="button button--dark" onClick={() => navigate('/shop')}>Shop the collection <ArrowUpRight size={16} /></button><button className="button button--quiet" onClick={() => goTo('origin')}>Explore our origins <ArrowDownRight size={16} /></button></div></div><div className="hero__footer"><span>NAAVORI NUTS · EST. 2024</span><button onClick={() => goTo('collection')} className="scroll-cue"><span /> Scroll to discover</button><span className="hero__coordinates">15°29′N · 74°07′E</span></div></section><section className="category-strip section-pad" id="collection"><div className="section-heading section-heading--split" data-reveal><div><p className="eyebrow">01 · The pantry, considered</p><h2>Begin with something<br /><em>beautiful.</em></h2></div><p className="section-intro">Three families of ingredients. Countless ways to make the everyday more generous.</p></div><div className="category-grid">{[{ name: 'Nuts', descriptor: 'The quiet luxury of a good crunch.', image: 'compositions/category-nuts.webp', number: '01' }, { name: 'Seeds', descriptor: 'Small ingredients. Considered nourishment.', image: 'compositions/category-seeds.webp', number: '02' }, { name: 'Spices', descriptor: 'A little warmth changes everything.', image: 'compositions/category-spices.webp', number: '03' }].map((category) => <button key={category.name} className="category-card" onClick={() => navigate(`/${category.name.toLowerCase()}`)} data-reveal><span className="category-card__image" style={{ backgroundImage: `url(${asset(category.image)})`, backgroundPosition: 'center' }} /><span className="category-card__veil" /><span className="category-card__label"><small>{category.number}</small><strong>{category.name}</strong><em>{category.descriptor}</em></span><ArrowUpRight className="category-card__arrow" size={20} /></button>)}</div></section><section className="best-sellers section-pad section-pad--top" id="best-sellers"><div className="section-heading section-heading--split" data-reveal><div><p className="eyebrow">02 · The edit</p><h2>Best sellers, <em>reconsidered.</em></h2></div><button className="line-button" onClick={() => navigate('/shop')}>View all ingredients <ArrowUpRight size={15} /></button></div><ProductGrid items={catalogue.slice(0, 6)} wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart} buyNow={buyNow} navigate={navigate} /></section><GiftingSection navigate={navigate} onAddToCart={addGiftToCart} onBuyNow={buyGiftNow} /><section className="manifesto section-pad" id="journal"><div className="manifesto__texture" /><div className="manifesto__content" data-reveal><p className="eyebrow">A note from NAAVORI</p><blockquote>“More than just nuts.<br /><em>It&apos;s a journey of India&apos;s richest regions.</em>”</blockquote><p>We believe the best pantry staples carry a sense of place. In the way a walnut remembers a cold valley, or pepper holds the damp green air of the coast.</p><button className="line-button line-button--light" onClick={() => goTo('origin')}>Read our story <ArrowUpRight size={15} /></button></div><div className="manifesto__stamp"><LogoImage light /><span>Pure origins<br />Real goodness</span></div></section><section className="showcase section-pad" id="showcase"><div className="showcase__heading" data-reveal><div><p className="eyebrow">04 · The collection, observed</p><h2>Meet the <em>ritual.</em></h2></div><p className="section-intro">A considered still life of provenance, colour and texture — made lighter for a faster, quieter experience.</p></div><div className="showcase__stage showcase__stage--static" data-reveal><img src={asset('compositions/brand-reference.webp')} alt="NAAVORI ingredients and original brand composition" loading="lazy" /><div className="showcase__caption"><span><Sparkles size={15} /> Original compositions</span><span className="showcase__status"><i /> Selected in India</span></div></div><p className="showcase__note">Nuts · Seeds · Spices · Pure origins, real goodness.</p></section><section className="why section-pad"><div className="section-heading" data-reveal><p className="eyebrow">05 · The NAAVORI standard</p><h2>Goodness, <em>with standards.</em></h2><p className="section-intro">From the way we source to the way we seal, every detail is made to honour what nature already got right.</p></div><div className="reason-grid">{reasons.map(({ icon: Icon, eyebrow, title, copy }) => <article className="reason-card" key={title} data-reveal><span className="reason-card__number">{eyebrow}</span><Icon size={22} strokeWidth={1.4} /><h3>{title}</h3><p>{copy}</p></article>)}</div></section><BuilderShowcase navigate={navigate} addCustomToCart={addCustomToCart} /><OriginMap activeOrigin={activeOrigin} setActiveOrigin={setActiveOrigin} setQuickView={setQuickView} navigate={navigate} /><section className="reviews section-pad" id="reviews"><div className="reviews__header" data-reveal><div><p className="eyebrow">06 · Kind words & Patron reviews</p><span className="reviews__count">0{testimonial + 1} <i>/</i> 0{reviewsList.length}</span></div><button className="review-write-cta" onClick={() => setReviewModalOpen(true)}><Star size={14} fill="#b78d52" color="#b78d52" /> Write a review</button></div><div className="review-card" data-reveal><span className="review-card__quote">“</span><blockquote>{reviewsList[testimonial]?.quote}</blockquote><div className="review-card__byline"><strong>{reviewsList[testimonial]?.name}</strong><span>{reviewsList[testimonial]?.role}</span></div><div className="review-card__controls"><button onClick={() => setTestimonial((testimonial - 1 + reviewsList.length) % reviewsList.length)} aria-label="Previous review"><ChevronLeft size={18} /></button><button onClick={() => setTestimonial((testimonial + 1) % reviewsList.length)} aria-label="Next review"><ChevronRight size={18} /></button></div></div></section><section className="newsletter section-pad" id="newsletter" data-reveal><div className="newsletter__ornament">✦</div><div className="newsletter__content"><p className="eyebrow">The NAAVORI letter</p><h2>A little goodness,<br /><em>in your inbox.</em></h2><p>Seasonal stories, new harvests and considered ways to make the everyday beautiful.</p>{newsletterSent ? <div className="newsletter__success"><span>✦</span> You&apos;re on the list. See you soon.</div> : <form onSubmit={submitNewsletter}><label className="sr-only" htmlFor="email">Email address</label><input id="email" type="email" required value={newsletter} onChange={(event) => setNewsletter(event.target.value)} placeholder="Your email address" /><button type="submit" aria-label="Subscribe"><ArrowUpRight size={18} /></button></form>}<small>By subscribing, you agree to hear from us. No noise, ever.</small></div><span className="newsletter__leaf newsletter__leaf--one" /><span className="newsletter__leaf newsletter__leaf--two" /></section></main><footer className="site-footer"><div className="site-footer__top"><div className="footer-brand"><button className="footer-lockup" onClick={() => goTo('top')}><LogoImage light /></button><p>Pure origins. Real goodness.<br />Rooted in India, crafted for tomorrow.</p><p className="footer-contact">K63/112, Nakkash · Bhoot Bhairav<br />Varanasi – 221001<br /><a href="mailto:info@naavori.in">info@naavori.in</a><br /><a href="tel:+918318829334">+91 83188 29334</a> · <a href="tel:+918448170969">+91 84481 70969</a></p></div><div className="footer-column"><p className="eyebrow">Discover</p><button onClick={() => goTo('collection')}>The collection</button><button onClick={() => goTo('gifting')}>Gifting & hampers</button><button onClick={() => goTo('origin')}>Our origins</button><button onClick={() => goTo('builders')}>Build your edit</button><button onClick={() => goTo('reviews')}>Patron reviews</button></div><div className="footer-column"><p className="eyebrow">Care</p><button onClick={() => navigate('/contact')}>Contact us</button><button onClick={() => setPolicyModal('no-return')}>No-Return Policy</button><button onClick={() => setPolicyModal('shipping')}>Shipping & Delivery</button><button onClick={() => setPolicyModal('terms')}>Privacy & Terms</button><button onClick={() => { window.location.href = '/admin'; }} style={{ color: '#D4AF37' }}>Admin Portal ↗</button></div><div className="footer-column"><p className="eyebrow">Your edit</p><button onClick={() => navigate('/wishlist')}>Wishlist <Heart size={13} /></button><button onClick={() => navigate('/cart')}>Shopping bag <ShoppingBag size={13} /></button><button onClick={() => navigate('/contact')}>Concierge <Mail size={13} /></button></div></div><div className="site-footer__bottom"><span>© 2024 NAAVORI NUTS</span><span>Made with intention in India</span><button onClick={() => setPolicyModal('terms')} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0 }}>Privacy · Terms</button><a href="/admin" style={{ color: 'rgba(255,255,255,0.75)', textDecoration: 'none', marginLeft: '12px', fontSize: '12px' }}>Staff & Admin Access ↗</a></div></footer></div></>;
+  const renderHome = () => <><div className="site-shell"><header className={`site-header ${scrolled ? 'site-header--scrolled' : ''}`}><button className="header-brand" onClick={() => goTo('top')} aria-label="Back to top"><LogoImage /></button><nav className={`main-nav ${menuOpen ? 'main-nav--open' : ''}`}><button onClick={() => navigate('/')}>Home</button><button onClick={() => navigate('/shop')}>Shop</button><button onClick={() => goTo('builders')}>Build</button><button onClick={() => goTo('origin')}>Origins</button><button onClick={() => goTo('reviews')}>Reviews</button><button onClick={() => navigate('/about')}>About</button><button onClick={() => navigate('/contact')}>Contact</button></nav><div className="header-actions"><button className={`icon-button search-button ${searchOpen ? 'search-button--open' : ''}`} onClick={() => setSearchOpen((value) => !value)} aria-label="Search">{searchOpen ? <><Search size={17} /><input autoFocus onClick={(event) => event.stopPropagation()} onKeyDown={(event) => { if (event.key === 'Enter' && event.currentTarget.value) navigate(`/shop?query=${encodeURIComponent(event.currentTarget.value)}`); }} placeholder="Search ingredients" /></> : <Search size={18} />}</button><button className="icon-button" onClick={() => navigate(customer ? '/account' : '/login')} aria-label={customer ? 'Account' : 'Sign in'} title={customer ? `Signed in as ${customer.name}` : 'Sign in / Register'} style={{ position: 'relative' }}><User size={18} />{customer && <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#52c41a', position: 'absolute', top: '5px', right: '5px', border: '1px solid #fff' }} />}</button><button className="icon-button" onClick={() => navigate('/wishlist')} aria-label="Wishlist"><Heart size={18} /></button><button className="icon-button cart-button" onClick={() => navigate('/cart')} aria-label="Shopping bag"><ShoppingBag size={18} /><span>{cartCount}</span></button><button className="menu-toggle" onClick={() => setMenuOpen((value) => !value)} aria-label="Toggle navigation">{menuOpen ? <X size={20} /> : <Menu size={20} />}</button></div></header><main id="top"><section className="hero" onMouseMove={handleHeroMove}><video className="hero__video" autoPlay muted loop playsInline preload="metadata" poster={asset('compositions/brand-reference.webp')}><source src={asset('hero-video.mp4')} type="video/mp4" /></video><div className="hero__veil" /><div className="hero__glow" /><div className="hero__particles" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div><div className="hero__content"><p className="eyebrow hero__eyebrow"><span className="eyebrow-dot" /> From India, with intention</p><h1>Pure origins.<br /><em>Real goodness.</em></h1><p className="hero__copy">A considered collection of nuts, seeds and spices — selected from India&apos;s richest regions, crafted for everyday ritual.</p><div className="hero__actions"><button className="button button--dark" onClick={() => navigate('/shop')}>Shop the collection <ArrowUpRight size={16} /></button><button className="button button--quiet" onClick={() => goTo('origin')}>Explore our origins <ArrowDownRight size={16} /></button></div></div><div className="hero__footer"><span>NAAVORI NUTS · EST. 2024</span><button onClick={() => goTo('collection')} className="scroll-cue"><span /> Scroll to discover</button><span className="hero__coordinates">15°29′N · 74°07′E</span></div></section><section className="category-strip section-pad" id="collection"><div className="section-heading section-heading--split" data-reveal><div><p className="eyebrow">01 · The pantry, considered</p><h2>Begin with something<br /><em>beautiful.</em></h2></div><p className="section-intro">Three families of ingredients. Countless ways to make the everyday more generous.</p></div><div className="category-grid">{[{ name: 'Nuts', descriptor: 'The quiet luxury of a good crunch.', image: 'compositions/category-nuts.webp', number: '01' }, { name: 'Seeds', descriptor: 'Small ingredients. Considered nourishment.', image: 'compositions/category-seeds.webp', number: '02' }, { name: 'Spices', descriptor: 'A little warmth changes everything.', image: 'compositions/category-spices.webp', number: '03' }].map((category) => <button key={category.name} className="category-card" onClick={() => navigate(`/${category.name.toLowerCase()}`)} data-reveal><span className="category-card__image" style={{ backgroundImage: `url(${asset(category.image)})`, backgroundPosition: 'center' }} /><span className="category-card__veil" /><span className="category-card__label"><small>{category.number}</small><strong>{category.name}</strong><em>{category.descriptor}</em></span><ArrowUpRight className="category-card__arrow" size={20} /></button>)}</div></section><section className="best-sellers section-pad section-pad--top" id="best-sellers"><div className="section-heading section-heading--split" data-reveal><div><p className="eyebrow">02 · The edit</p><h2>Best sellers, <em>reconsidered.</em></h2></div><button className="line-button" onClick={() => navigate('/shop')}>View all ingredients <ArrowUpRight size={15} /></button></div><ProductGrid items={catalogue.slice(0, 6)} wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart} buyNow={buyNow} navigate={navigate} /></section><section className="manifesto section-pad" id="journal"><div className="manifesto__texture" /><div className="manifesto__content" data-reveal><p className="eyebrow">A note from NAAVORI</p><blockquote>“More than just nuts.<br /><em>It&apos;s a journey of India&apos;s richest regions.</em>”</blockquote><p>We believe the best pantry staples carry a sense of place. In the way a walnut remembers a cold valley, or pepper holds the damp green air of the coast.</p><button className="line-button line-button--light" onClick={() => goTo('origin')}>Read our story <ArrowUpRight size={15} /></button></div><div className="manifesto__stamp"><LogoImage light /><span>Pure origins<br />Real goodness</span></div></section><section className="showcase section-pad" id="showcase"><div className="showcase__heading" data-reveal><div><p className="eyebrow">03 · The collection, observed</p><h2>Meet the <em>ritual.</em></h2></div><p className="section-intro">A considered still life of provenance, colour and texture — made lighter for a faster, quieter experience.</p></div><div className="showcase__stage showcase__stage--static" data-reveal><img src={asset('compositions/brand-reference.webp')} alt="NAAVORI ingredients and original brand composition" loading="lazy" /><div className="showcase__caption"><span><Sparkles size={15} /> Original compositions</span><span className="showcase__status"><i /> Selected in India</span></div></div><p className="showcase__note">Nuts · Seeds · Spices · Pure origins, real goodness.</p></section><section className="why section-pad"><div className="section-heading" data-reveal><p className="eyebrow">04 · The NAAVORI standard</p><h2>Goodness, <em>with standards.</em></h2><p className="section-intro">From the way we source to the way we seal, every detail is made to honour what nature already got right.</p></div><div className="reason-grid">{reasons.map(({ icon: Icon, eyebrow, title, copy }) => <article className="reason-card" key={title} data-reveal><span className="reason-card__number">{eyebrow}</span><Icon size={22} strokeWidth={1.4} /><h3>{title}</h3><p>{copy}</p></article>)}</div></section><BuilderShowcase navigate={navigate} addCustomToCart={addCustomToCart} /><OriginMap activeOrigin={activeOrigin} setActiveOrigin={setActiveOrigin} setQuickView={setQuickView} navigate={navigate} /><section className="reviews section-pad" id="reviews"><div className="reviews__header" data-reveal><div><p className="eyebrow">05 · Kind words & Patron reviews</p><span className="reviews__count">0{testimonial + 1} <i>/</i> 0{reviewsList.length}</span></div><button className="review-write-cta" onClick={() => setReviewModalOpen(true)}><Star size={14} fill="#b78d52" color="#b78d52" /> Write a review</button></div><div className="review-card" data-reveal><span className="review-card__quote">“</span><blockquote>{reviewsList[testimonial]?.quote}</blockquote><div className="review-card__byline"><strong>{reviewsList[testimonial]?.name}</strong><span>{reviewsList[testimonial]?.role}</span></div><div className="review-card__controls"><button onClick={() => setTestimonial((testimonial - 1 + reviewsList.length) % reviewsList.length)} aria-label="Previous review"><ChevronLeft size={18} /></button><button onClick={() => setTestimonial((testimonial + 1) % reviewsList.length)} aria-label="Next review"><ChevronRight size={18} /></button></div></div></section><section className="newsletter section-pad" id="newsletter" data-reveal><div className="newsletter__ornament">✦</div><div className="newsletter__content"><p className="eyebrow">The NAAVORI letter</p><h2>A little goodness,<br /><em>in your inbox.</em></h2><p>Seasonal stories, new harvests and considered ways to make the everyday beautiful.</p>{newsletterSent ? <div className="newsletter__success"><span>✦</span> You&apos;re on the list. See you soon.</div> : <form onSubmit={submitNewsletter}><label className="sr-only" htmlFor="email">Email address</label><input id="email" type="email" required value={newsletter} onChange={(event) => setNewsletter(event.target.value)} placeholder="Your email address" /><button type="submit" aria-label="Subscribe"><ArrowUpRight size={18} /></button></form>}<small>By subscribing, you agree to hear from us. No noise, ever.</small></div><span className="newsletter__leaf newsletter__leaf--one" /><span className="newsletter__leaf newsletter__leaf--two" /></section></main><footer className="site-footer"><div className="site-footer__top"><div className="footer-brand"><button className="footer-lockup" onClick={() => goTo('top')}><LogoImage light /></button><p>Pure origins. Real goodness.<br />Rooted in India, crafted for tomorrow.</p><p className="footer-contact">K63/112, Nakkash · Bhoot Bhairav<br />Varanasi – 221001<br /><a href="mailto:info@naavori.in">info@naavori.in</a><br /><a href="tel:+918318819334">+91 83188 19334</a> · <a href="tel:+918448170969">+91 84481 70969</a></p></div><div className="footer-column"><p className="eyebrow">Discover</p><button onClick={() => goTo('collection')}>The collection</button><button onClick={() => goTo('origin')}>Our origins</button><button onClick={() => goTo('builders')}>Build your edit</button><button onClick={() => goTo('reviews')}>Patron reviews</button></div><div className="footer-column"><p className="eyebrow">Care</p><button onClick={() => navigate('/contact')}>Contact us</button><button onClick={() => setPolicyModal('no-return')}>No-Return Policy</button><button onClick={() => setPolicyModal('shipping')}>Shipping & Delivery</button><button onClick={() => setPolicyModal('terms')}>Privacy & Terms</button><button onClick={() => { window.location.href = '/admin'; }} style={{ color: '#D4AF37' }}>Admin Portal ↗</button></div><div className="footer-column"><p className="eyebrow">Your edit</p><button onClick={() => navigate('/wishlist')}>Wishlist <Heart size={13} /></button><button onClick={() => navigate('/cart')}>Shopping bag <ShoppingBag size={13} /></button><button onClick={() => navigate('/contact')}>Concierge <Mail size={13} /></button></div></div><div className="site-footer__bottom"><span>© 2024 NAAVORI NUTS</span><span>Made with intention in India</span><button onClick={() => setPolicyModal('terms')} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', font: 'inherit', padding: 0 }}>Privacy · Terms</button><a href="/admin" style={{ color: 'rgba(255,255,255,0.75)', textDecoration: 'none', marginLeft: '12px', fontSize: '12px' }}>Staff & Admin Access ↗</a></div></footer></div></>;
 
   const detailProduct = route.startsWith('/product/') ? catalogue.find((item) => item.id === route.split('/')[2] || item.packagingKey === route.split('/')[2]) : undefined;
   let routePage: ReactNode;
   if (detailProduct) routePage = <ProductDetailPage product={detailProduct} liked={wishlist.includes(detailProduct.id)} toggleWishlist={() => toggleWishlist(detailProduct.id)} addToCart={addToCart} navigate={navigate} />;
   else if (route === '/shop') routePage = <ShopPage wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart} buyNow={buyNow} navigate={navigate} catalogue={catalogue} />;
-  else if (route === '/gifting') routePage = <GiftingPage navigate={navigate} onAddToCart={addGiftToCart} onBuyNow={buyGiftNow} setToast={setToast} />;
+  else if (route === '/gifting') { navigate('/shop'); routePage = <ShopPage wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart} buyNow={buyNow} navigate={navigate} catalogue={catalogue} />; }
   else if (route === '/nuts' || route === '/seeds' || route === '/spices') routePage = <CategoryPage kind={route.slice(1).replace(/^./, (letter) => letter.toUpperCase()) as Category} wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart} buyNow={buyNow} navigate={navigate} catalogue={catalogue} />;
   else if (route.startsWith('/build/')) routePage = <BuilderPage kind={route.split('/')[2] as BuilderKind} addCustomToCart={addCustomToCart} navigate={navigate} />;
   else if (route === '/cart') routePage = <CartPage cart={cart} updateQuantity={updateQuantity} removeLine={removeLine} navigate={navigate} />;

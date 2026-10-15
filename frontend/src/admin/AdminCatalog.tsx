@@ -32,7 +32,7 @@ type ProductListDTO = {
   packaging_key?: string;
 };
 
-type CategoryTabKey = 'all' | 'nuts' | 'spices' | 'seeds' | 'gifting';
+type CategoryTabKey = 'all' | 'nuts' | 'spices' | 'seeds';
 
 export default function AdminCatalog() {
   const [products, setProducts] = useState<ProductListDTO[]>([]);
@@ -204,7 +204,6 @@ export default function AdminCatalog() {
       nuts: products.filter(p => (p.category_name || '').toLowerCase() === 'nuts').length,
       spices: products.filter(p => (p.category_name || '').toLowerCase() === 'spices').length,
       seeds: products.filter(p => (p.category_name || '').toLowerCase() === 'seeds').length,
-      gifting: products.filter(p => (p.category_name || '').toLowerCase().includes('gift')).length,
     };
   }, [products]);
 
@@ -266,7 +265,7 @@ export default function AdminCatalog() {
         </div>
       </div>
 
-      {/* Category Tabs: Nuts, Spices, Seeds, Gifting */}
+      {/* Category Tabs: Nuts, Spices, Seeds */}
       <div style={{ 
         display: 'flex', 
         gap: '10px', 
@@ -280,7 +279,6 @@ export default function AdminCatalog() {
           { key: 'nuts' as CategoryTabKey, label: 'Nuts (काजू, बादाम, अखरोट)', icon: '🥜' },
           { key: 'spices' as CategoryTabKey, label: 'Spices (केसर, इलायची, मसाले)', icon: '🌶️' },
           { key: 'seeds' as CategoryTabKey, label: 'Seeds (चिया, कद्दू, अलसी)', icon: '🌱' },
-          { key: 'gifting' as CategoryTabKey, label: 'Gifting Hampers', icon: '🎁' },
         ].map(tab => {
           const isSelected = activeTab === tab.key;
           return (

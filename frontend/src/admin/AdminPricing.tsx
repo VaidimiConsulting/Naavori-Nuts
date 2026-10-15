@@ -32,7 +32,7 @@ type ProductListDTO = {
   packaging_key?: string;
 };
 
-type CategoryTabKey = 'all' | 'nuts' | 'spices' | 'seeds' | 'gifting';
+type CategoryTabKey = 'all' | 'nuts' | 'spices' | 'seeds';
 
 export default function AdminPricing() {
   const [products, setProducts] = useState<ProductListDTO[]>([]);
@@ -292,7 +292,7 @@ export default function AdminPricing() {
         </div>
       </div>
 
-      {/* Category Tabs: Nuts, Spices, Seeds, Gifting */}
+      {/* Category Tabs: Nuts, Spices, Seeds */}
       <div style={{ 
         display: 'flex', 
         gap: '10px', 
@@ -306,7 +306,6 @@ export default function AdminPricing() {
           { key: 'nuts' as CategoryTabKey, label: 'Nuts (काजू, बादाम, अखरोट, पिस्ता)', icon: '🥜' },
           { key: 'spices' as CategoryTabKey, label: 'Spices (जीरा, मिर्च, लौंग, मसाले)', icon: '🌶️' },
           { key: 'seeds' as CategoryTabKey, label: 'Seeds (कद्दू, अलसी, चिया बीज)', icon: '🌱' },
-          { key: 'gifting' as CategoryTabKey, label: 'Gifting Hampers', icon: '🎁' },
         ].map(tab => {
           const isSelected = activeTab === tab.key;
           return (

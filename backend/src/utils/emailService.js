@@ -174,7 +174,7 @@ export const sendOrderConfirmationEmail = async (orderData, userEmail) => {
                       <a href="mailto:${STORE_EMAIL}" style="color:#b78d52;font-weight:600;text-decoration:none;">${STORE_EMAIL}</a>
                     </p>
                     <p style="font-size:12px;color:#999;margin:0;">
-                      Or call our store desk: <strong>+91 83188 29334</strong> / <strong>+91 84481 70969</strong>
+                      Or call our store desk: <strong>+91 83188 19334</strong> / <strong>+91 84481 70969</strong>
                     </p>
                   </td>
                 </tr>
@@ -329,7 +329,7 @@ export const sendInquiryCustomerAcknowledgment = async ({ name, email, subject }
 
     <div style="background:#faf7f2;border:1px solid #ebdccb;padding:14px 18px;border-radius:8px;margin:20px 0;font-size:13px;color:#6a5a6c;">
       <strong>Need immediate assistance?</strong><br/>
-      Reach store ownership directly at <a href="tel:+918318829334" style="color:#b78d52;font-weight:600;">+91 83188 29334</a> or write to <a href="mailto:${STORE_EMAIL}" style="color:#b78d52;font-weight:600;">${STORE_EMAIL}</a>.
+      Reach store ownership directly at <a href="tel:+918318819334" style="color:#b78d52;font-weight:600;">+91 83188 19334</a> or write to <a href="mailto:${STORE_EMAIL}" style="color:#b78d52;font-weight:600;">${STORE_EMAIL}</a>.
     </div>
 
     <p style="font-size:12px;color:#999;margin-top:24px;border-top:1px solid #eee;padding-top:12px;">
@@ -381,7 +381,7 @@ export const sendOrderShippedEmail = async (orderData, userEmail) => {
               <div style="background:#faf7f2;border:1px solid #ebdccb;padding:16px;border-radius:8px;margin:20px 0;">
                 <p style="margin:0;font-size:13.5px;color:#444;">
                   <strong>Payment upon Delivery:</strong> ₹${Number(orderData.total || 0).toLocaleString('en-IN')} (Cash on Delivery)<br/>
-                  <strong>Contact for inquiries:</strong> <a href="mailto:${STORE_EMAIL}" style="color:#b78d52;">${STORE_EMAIL}</a> / +91 83188 29334
+                  <strong>Contact for inquiries:</strong> <a href="mailto:${STORE_EMAIL}" style="color:#b78d52;">${STORE_EMAIL}</a> / +91 83188 19334
                 </p>
               </div>
             </td>

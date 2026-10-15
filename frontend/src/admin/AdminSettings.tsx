@@ -6,8 +6,8 @@ export default function AdminSettings() {
   const [settings, setSettings] = useState({
     store_name: 'NAAVORI NUTS',
     support_email: 'info@naavori.in',
-    support_phone: '+91 83188 29334 / +91 84481 70969',
-    owner_phone: '+91 83188 29334, +91 84481 70969',
+    support_phone: '+91 83188 19334 / +91 84481 70969',
+    owner_phone: '+91 83188 19334, +91 84481 70969',
     currency: 'INR',
     tax_rate: '5',
     free_shipping_threshold: '',
@@ -83,7 +83,7 @@ export default function AdminSettings() {
             </div>
             <label style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontFamily: 'DM Sans', fontSize: '14px', color: '#38243F', fontWeight: 500 }}>
               Owner Direct Phone Numbers
-              <input type="text" name="owner_phone" value={settings.owner_phone} onChange={handleChange} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontFamily: 'DM Sans' }} placeholder="+91 83188 29334, +91 84481 70969" />
+              <input type="text" name="owner_phone" value={settings.owner_phone} onChange={handleChange} style={{ padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontFamily: 'DM Sans' }} placeholder="+91 83188 19334, +91 84481 70969" />
               <small style={{ color: '#888' }}>Official contact numbers displayed on contact page and invoices.</small>
             </label>
           </div>

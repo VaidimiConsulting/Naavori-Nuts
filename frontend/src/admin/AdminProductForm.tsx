@@ -17,8 +17,7 @@ export default function AdminProductForm() {
   const [categories, setCategories] = useState<CategoryDTO[]>([
     { id: 'c0c2eae4-181c-499b-ac87-1b30696785f5', name: 'Nuts', slug: 'nuts' },
     { id: '4f6994cd-5725-4584-8bc8-130ff8333a99', name: 'Spices', slug: 'spices' },
-    { id: '114011c5-3582-4a7f-9f8c-0308ada97dfb', name: 'Seeds', slug: 'seeds' },
-    { id: 'gifting-category-uuid', name: 'Gifting', slug: 'gifting' }
+    { id: '114011c5-3582-4a7f-9f8c-0308ada97dfb', name: 'Seeds', slug: 'seeds' }
   ]);
 
   const [formData, setFormData] = useState({

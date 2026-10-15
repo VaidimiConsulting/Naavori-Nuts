@@ -29,7 +29,7 @@ export function PolicyModal({ type, onClose }: PolicyModalProps) {
           </ul>
           <h4>3. Transit Damage or Wrong Item</h4>
           <p>
-            If your package arrives physically broken or unsealed due to courier transit damage, please WhatsApp our Concierge at <strong>+91 83188 29334</strong> within <strong>24 hours of delivery</strong> with an unboxing photograph. Our team will verify and dispatch an immediate complimentary replacement.
+            If your package arrives physically broken or unsealed due to courier transit damage, please WhatsApp our Concierge at <strong>+91 83188 19334</strong> within <strong>24 hours of delivery</strong> with an unboxing photograph. Our team will verify and dispatch an immediate complimentary replacement.
           </p>
         </>
       ),
@@ -78,7 +78,7 @@ export function PolicyModal({ type, onClose }: PolicyModalProps) {
           </p>
           <h4>3. Contact & Concierge</h4>
           <p>
-            For any queries or assistance, contact store ownership directly at <strong>+91 83188 29334</strong> or <strong>info@naavori.in</strong>.
+            For any queries or assistance, contact store ownership directly at <strong>+91 83188 19334</strong> or <strong>info@naavori.in</strong>.
           </p>
         </>
       ),

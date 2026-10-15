@@ -292,7 +292,7 @@ export function CustomerAccount({ customer, onLogout, navigate, onReorder }: Cus
           }}>
             <h3 style={{ fontSize: '16px', margin: '0 0 12px' }}>Patron Concierge</h3>
             <p style={{ fontSize: '13px', color: 'var(--brown-soft)', lineHeight: 1.6, margin: '0 0 16px' }}>
-              Have questions regarding custom roast batches, festive hampers, or recurring pantry dispatches?
+              Have questions regarding custom roast batches, special orders, or recurring pantry dispatches?
             </p>
             <button
               onClick={() => navigate('/contact')}

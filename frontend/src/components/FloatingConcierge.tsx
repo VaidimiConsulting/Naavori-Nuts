@@ -21,13 +21,13 @@ export function FloatingConcierge() {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  const ownerPhone = '+918318829334';
-  const ownerPhoneDisplay = '+91 83188 29334';
+  const ownerPhone = '+918318819334';
+  const ownerPhoneDisplay = '+91 83188 19334';
   const directPhone = '+918448170969';
   const directPhoneDisplay = '+91 84481 70969';
 
-  const whatsappUrl = `https://wa.me/918318829334?text=${encodeURIComponent(
-    'Namaste NAAVORI NUTS, I would like to inquire about your ingredients / bespoke gifting / order assistance.'
+  const whatsappUrl = `https://wa.me/918318819334?text=${encodeURIComponent(
+    'Namaste NAAVORI NUTS, I would like to inquire about your ingredients / order assistance.'
   )}`;
 
   return (
@@ -202,7 +202,7 @@ export function FloatingConcierge() {
                 Heritage Concierge
               </h3>
               <p style={{ margin: 0, fontSize: '12px', color: 'rgba(244, 237, 228, 0.8)', lineHeight: 1.4 }}>
-                Direct assistance from Varanasi for fresh batches, sourcing & bespoke gifts.
+                Direct assistance from Varanasi for fresh batches, sourcing & order assistance.
               </p>
             </div>
 
@@ -303,7 +303,7 @@ export function FloatingConcierge() {
               >
                 <Building2 size={15} color="#D4AF37" style={{ flexShrink: 0, marginTop: '2px' }} />
                 <span>
-                  <strong>Wedding & Corporate Hampers:</strong> Custom branding & bulk pricing available for 25+ boxes.
+                  <strong>Bulk & Institutional Orders:</strong> Custom packaging & wholesale pricing available for 25+ units.
                 </span>
               </div>
             </div>
